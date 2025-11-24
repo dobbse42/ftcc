@@ -1,6 +1,9 @@
-import PyZX as zx
+import pyzx as zx
+from ftcc.compilation_layers.base_layer import BaseLayer
+from pyzx.graph.base import BaseGraph
+from pyzx import extract_circuit
 
-class PyzxOptimizerLayer(base_layer.BaseLayer):
+class PyZXLayer(BaseLayer):
     """
     Expects to be initialized with the circuit in the PyZX Circuit IR. Creates a PyZX graph IR from this.
     """
@@ -9,12 +12,14 @@ class PyzxOptimizerLayer(base_layer.BaseLayer):
         """
         Initializes a PyZX optimization compilation layer.
         """
-        if isinstance(input_circ, zx.Graph):
+
+        self.metadata = metadata
+        
+        if isinstance(input_circ, BaseGraph):
             self.graph = input_circ
-            self.circuit = self.graph.to_circuit()
         elif isinstance(input_circ, zx.Circuit):
-            self.circuit = input_circ
-            self.graph = self.circuit.to_graph()
+            # self.circuit = input_circ
+            self.graph = input_circ.to_graph()
 
 
 
@@ -23,8 +28,8 @@ class PyzxOptimizerLayer(base_layer.BaseLayer):
         Applies optimizations on a PyZX graph.
         """
 
-        zx.full_reduce(self.zx_graph)
-        zx.to_rg(zx_graph)
+        zx.full_reduce(self.graph)
+        zx.to_rg(self.graph)
 
         return
 
@@ -34,6 +39,9 @@ class PyzxOptimizerLayer(base_layer.BaseLayer):
         Returns the circuit in the PyZX Circuit IR by default, and the PyZX graph IR optionally. Also returns
         all metadata passed in.
         """
+
+        if output_IR == "circuit":
+            self.circuit = extract_circuit(self.graph)
 
         to_be_returned = {
             IR: self.graph if output_IR == "graph" else self.circuit,

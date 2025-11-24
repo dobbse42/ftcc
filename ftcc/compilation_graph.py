@@ -25,20 +25,20 @@ class CompilationGraph:
         graph = nx.Graph()
         
         graph.add_node("PyZX")
-        graph.add_node("MQT")
-        graph.add_node("Qualtran")
+        # graph.add_node("MQT")
+        # graph.add_node("Qualtran")
         graph.add_node("Topologiq")
         graph.add_node("TQEC")
-        graph.add_node("lsqecc")
-        graph.add_node("TISCC")
-        graph.add_node("Cirq")
+        # graph.add_node("lsqecc")
+        # graph.add_node("TISCC")
+        # graph.add_node("Cirq")
 
-        graph.add_edge(("MQT", "PyZX"))
-        graph.add_edge(("Qualtran", "PyZX"))
-        graph.add_edge(("Qualtran", "Cirq"))
+        # graph.add_edge(("MQT", "PyZX"))
+        # graph.add_edge(("Qualtran", "PyZX"))
+        # graph.add_edge(("Qualtran", "Cirq"))
         graph.add_edge(("PyZX", "Topologiq"))
         graph.add_edge(("Topologiq", "TQEC"))
-        graph.add_edge(("lsqecc", "TISCC"))
+        # graph.add_edge(("lsqecc", "TISCC"))
 
         return graph
 

@@ -1,27 +1,15 @@
 import pyzx as zx
 from topologiq.utils.interop_pyzx import pyzx_g_to_simple_g
-from topologiq_layer import TopologiqLayer
-from pyzx_layer import PyZXLayer
+from ftcc.compilation_layers.topologiq_layer import TopologiqLayer
+from ftcc.compilation_layers.pyzx_layer import PyZXLayer
 
-class PyZXToTopologiqTranslator(base_translation_layer.BaseTranslationLayer):
+
+def translate_pyzx_to_topologiq(pyzx_layer):
     """
-    aa
+    Creates a TopologiqLayer object from a compiled PyZXLayer object.
     """
+    
+    simple_graph = pyzx_g_to_simple_g(pyzx_layer.graph)
+    topologiq_layer = TopologiqLayer(simple_graph, metadata=pyzx_layer.metadata)
 
-    def __init__(self):
-        """
-        aa
-        """
-
-        pass
-
-
-    def translate(self, pyzx_layer):
-        """
-        aa
-        """
-
-        simple_graph = pyzx_g_to_simple_g(pyzx_layer.compiled_graph)
-        topologiq_layer = TopologiqLayer(simple_graph)
-
-        return topologiq_layer
+    return topologiq_layer

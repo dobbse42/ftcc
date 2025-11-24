@@ -1,7 +1,8 @@
 import topologiq
 from topologiq.scripts.runner import runner
+from ftcc.compilation_layers.base_layer import BaseLayer
 
-class TopologiqLayer(base_layer.BaseLayer):
+class TopologiqLayer(BaseLayer):
     """
     Adapted from Purva Thakre's end-to-end TQEC example notebook at:
     https://github.com/tqec/tqec/blob/e5d927e13ce8e20197134e42d082907c2d12151d/examples/notebooks/framework_integration.ipynb
@@ -39,7 +40,6 @@ class TopologiqLayer(base_layer.BaseLayer):
             self.circuit,
             circuit_name,
             visualize=(visualization, animation),
-            fig_data=fig_data,
             **kwargs,
         )
 

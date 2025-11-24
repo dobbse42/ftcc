@@ -4,4 +4,21 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "mqt>=0.1.1",
+    "mqt-qecc>=1.9.0",
+    "networkx>=3.5",
+    "pyzx>=0.9.0",
+    "qiskit>=2.1.2",
+    "topologiq",
+    "tqec",
+]
+
+[tool.uv.sources]
+topologiq = { git = "https://github.com/tqec/topologiq" }
+tqec = { git = "https://github.com/tqec/tqec.git", rev = "e5d927e" }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.1",
+]
