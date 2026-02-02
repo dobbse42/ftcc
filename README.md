@@ -1,3 +1,5 @@
+## Fault-Tolerant Compiler Collection
+
 [![Repository](https://img.shields.io/badge/GitHub-5C5C5C.svg?logo=github)](https://github.com/dobbse42/ftcc)
 [![Unitary Foundation](https://img.shields.io/badge/Supported%20By-Unitary%20Foundation-FFFF00.svg)](https://unitary.foundation)
 
