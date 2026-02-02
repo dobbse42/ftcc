@@ -1,7 +1,7 @@
 import abc
 
-class BaseLayer(abc.ABC):
 
+class BaseLayer(abc.ABC):
     @abc.abstractmethod
     def compile():
         """

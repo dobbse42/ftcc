@@ -1,14 +1,11 @@
-import pytest
-from ftcc.compilation_layers.tqec_layer import TQECLayer
-from ftcc.compilation_layers.topologiq_layer import TopologiqLayer
 from ftcc.compilation_layers.pyzx_layer import PyZXLayer
 from ftcc.translation_layers.topologiq_to_tqec import translate_topologiq_to_tqec
+
 # from ftcc.translation_layers.pyzx_to_topologiq import PyZXToTopologiqTranslator
 from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
 
-import qiskit
 import qiskit.qasm2 as qasm2
-from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+from qiskit import QuantumCircuit
 import pyzx as zx
 from tqec.utils.enums import Basis
 
@@ -41,14 +38,14 @@ zx_circuit = zx.Circuit.from_qasm(qasm_str)
 zx_graph = zx_circuit.to_graph()
 
 num_apply_state = zx_graph.num_inputs()
-zx_graph.apply_state('0' * num_apply_state)
-zx_graph.apply_effect('000///////')
+zx_graph.apply_state("0" * num_apply_state)
+zx_graph.apply_effect("000///////")
 
 # Use framework
 metadata = {
-  'code_n': 7,
-  'code_k': 1,
-  'code_d': 3,
+    "code_n": 7,
+    "code_k": 1,
+    "code_d": 3,
 }
 pyzx_layer = PyZXLayer(zx_graph, metadata=metadata)
 pyzx_layer.compile()
@@ -57,6 +54,6 @@ topologiq_layer = translate_pyzx_to_topologiq(pyzx_layer)
 topologiq_layer.compile()
 
 tqec_layer = translate_topologiq_to_tqec(topologiq_layer)
-tqec_layer.compile(Basis.X) # basis could also potentially be specified in metadata
+tqec_layer.compile(Basis.X)  # basis could also potentially be specified in metadata
 
 print(tqec_layer.stim_circuit)
