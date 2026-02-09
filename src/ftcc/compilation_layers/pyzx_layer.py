@@ -28,7 +28,7 @@ class PyZXLayer(BaseLayer):
         """
 
         zx.full_reduce(self.graph)
-        zx.to_rg(self.graph)
+        # zx.to_rg(self.graph)
 
         return
 
