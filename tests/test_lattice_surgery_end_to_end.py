@@ -37,15 +37,17 @@ qasm_str = qasm2.dumps(qc)
 zx_circuit = zx.Circuit.from_qasm(qasm_str)
 zx_graph = zx_circuit.to_graph()
 
-num_apply_state = zx_graph.num_inputs()
-zx_graph.apply_state("0" * num_apply_state)
-zx_graph.apply_effect("000///////")
+# num_apply_state = zx_graph.num_inputs()
+# zx_graph.apply_state("0" * num_apply_state)
+# zx_graph.apply_effect("000///////")
 
 # Use framework
 metadata = {
     "code_n": 7,
     "code_k": 1,
     "code_d": 3,
+    "num_qubits": 10,
+    "num_ancilla": 3,
 }
 pyzx_layer = PyZXLayer(zx_graph, metadata=metadata)
 pyzx_layer.compile()

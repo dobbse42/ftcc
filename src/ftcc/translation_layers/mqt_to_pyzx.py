@@ -12,9 +12,9 @@ def translate_mqt_encoding_to_pyzx(mqt_encoding_layer):
     zx_circuit = zx.Circuit.from_qasm(qasm_circuit)
 
     zx_graph = zx_circuit.to_graph(zx_circuit)
-    num_apply_state = zx_graph.num_inputs()
-    zx_graph.apply_state("0" * num_apply_state)
-    zx_graph.apply_effect("///////")
+    # num_apply_state = zx_graph.num_inputs()
+    # zx_graph.apply_state("0" * num_apply_state)
+    # zx_graph.apply_effect("///////")
     pyzx_layer = PyZXLayer(zx_graph, metadata=mqt_encoding_layer.metadata)
 
     return pyzx_layer

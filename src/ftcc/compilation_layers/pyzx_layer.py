@@ -22,6 +22,19 @@ class PyZXLayer(BaseLayer):
             # self.circuit = input_circ
             self.graph = input_circ.to_graph()
 
+        if "num_ancilla" not in self.metadata.keys():
+            self.metadata["num_ancilla"] = 0
+
+        if "initial_state" not in self.metadata.keys():
+            # initialize all qubits to 0 ket
+            self.graph.apply_state("0" * self.metadata["num_qubits"])
+
+        # zero out the ancilla
+        self.graph.apply_effect(
+            "0" * self.metadata["num_ancilla"]
+            + "/" * (self.metadata["num_qubits"] - self.metadata["num_ancilla"])
+        )
+
     def compile(self):
         """
         Applies optimizations on a PyZX graph.

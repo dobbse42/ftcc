@@ -83,7 +83,10 @@ def test_zx_optimized_correctness_small(N, circuit_type):
         circuit = CNOT_HAD_PHASE_circuit(N, N**2)
     else:
         raise ValueError
-    metadata = {}
+    metadata = {
+        "num_qubits": N,
+        "num_ancilla": 0,
+    }
 
     pyzx_layer = PyZXLayer(circuit, metadata)
     pyzx_layer.compile()
@@ -107,7 +110,10 @@ def test_zx_optimized_correctness_large(N, circuit_type):
         circuit = CNOT_HAD_PHASE_circuit(N, N**2)
     else:
         raise ValueError
-    metadata = {}
+    metadata = {
+        "num_qubits": N,
+        "num_ancilla": 0,
+    }
 
     pyzx_layer = PyZXLayer(circuit, metadata)
     pyzx_layer.compile()

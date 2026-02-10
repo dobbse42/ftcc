@@ -48,6 +48,6 @@ class TopologiqLayer(BaseLayer):
         self.metadata["topologiq_edge_paths"] = edge_paths
         self.metadata["topologiq_lattice_nodes"] = lattice_nodes
         self.metadata["topologiq_lattice_edges"] = lattice_edges
-        self.compiled_circuit = simple_graph_after_use
+        self.simple_graph = simple_graph_after_use
 
         return
