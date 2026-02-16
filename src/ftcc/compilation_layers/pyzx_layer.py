@@ -35,10 +35,21 @@ class PyZXLayer(BaseLayer):
             + '/' * (self.metadata['num_qubits'] - self.metadata['num_ancilla'])
         )"""
 
-    def compile(self):
+    def compile(self, apply_effect=False, apply_state=False):
         """
         Applies optimizations on a PyZX graph.
         """
+
+        if apply_state:
+            if "initial_state" not in self.metadata.keys():
+                print("num_qubits: ", self.metadata["num_qubits"])
+                print(self.graph.num_inputs())
+                self.graph.apply_state("0" * self.metadata["num_qubits"])
+        if apply_effect:
+            self.graph.apply_effect(
+                "0" * self.metadata["num_ancilla"]
+                + "/" * (self.metadata["num_qubits"] - self.metadata["num_ancilla"])
+            )
 
         zx.full_reduce(self.graph)
         # zx.to_rg(self.graph)

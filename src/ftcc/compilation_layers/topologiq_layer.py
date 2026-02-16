@@ -45,9 +45,12 @@ class TopologiqLayer(BaseLayer):
             **kwargs,
         )
 
-        self.metadata["topologiq_edge_paths"] = edge_paths
-        self.metadata["topologiq_lattice_nodes"] = lattice_nodes
-        self.metadata["topologiq_lattice_edges"] = lattice_edges
-        self.simple_graph = simple_graph_after_use
+        if lattice_nodes is None or lattice_edges is None:
+            raise RuntimeError("topologiq failed")
+        else:
+            self.metadata["topologiq_edge_paths"] = edge_paths
+            self.metadata["topologiq_lattice_nodes"] = lattice_nodes
+            self.metadata["topologiq_lattice_edges"] = lattice_edges
+            self.simple_graph = simple_graph_after_use
 
         return

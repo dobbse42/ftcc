@@ -17,7 +17,7 @@ mqt_encoding_layer = MQTEncodingLayer(metadata=metadata)
 mqt_encoding_layer.compile()
 
 pyzx_layer = translate_mqt_encoding_to_pyzx(mqt_encoding_layer)
-pyzx_layer.compile()
+pyzx_layer.compile(apply_state=True, apply_effect=True)
 
 topologiq_layer = translate_pyzx_to_topologiq(pyzx_layer)
 topologiq_layer.compile()

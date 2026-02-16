@@ -2,8 +2,12 @@ import pytest
 from ftcc.compilation_layers.tqec_layer import TQECLayer
 from ftcc.compilation_layers.topologiq_layer import TopologiqLayer
 from ftcc.compilation_layers.mqt_encoding_layer import MQTEncodingLayer
+from ftcc.compilation_layers.pyzx_layer import PyZXLayer
+
 from ftcc.translation_layers.topologiq_to_tqec import translate_topologiq_to_tqec
+from ftcc.translation_layers.mqt_to_pyzx import translate_mqt_encoding_to_pyzx
 from ftcc.translation_layers.mqt_to_topologiq import translate_mqt_encoding_to_topologiq
+from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
 
 import qiskit
 import qiskit.qasm2 as qasm2
@@ -18,7 +22,12 @@ metadata = {"code_n": 7, "code_k": 1, "code_d": 3, "code_name": "Steane"}
 mqt_encoding_layer = MQTEncodingLayer(metadata=metadata)
 mqt_encoding_layer.compile()
 
-topologiq_layer = translate_mqt_encoding_to_topologiq(mqt_encoding_layer)
+# topologiq_layer = translate_mqt_encoding_to_topologiq(mqt_encoding_layer)
+
+pyzx_layer = translate_mqt_encoding_to_pyzx(mqt_encoding_layer)
+pyzx_layer.compile()
+topologiq_layer = translate_pyzx_to_topologiq(pyzx_layer)
+
 topologiq_layer.compile()
 
 tqec_layer = translate_topologiq_to_tqec(topologiq_layer)
