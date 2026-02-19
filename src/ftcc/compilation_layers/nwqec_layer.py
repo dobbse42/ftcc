@@ -17,3 +17,14 @@ class NWQECPauliLayer(BaseLayer):
         self.circuit = nwqec.to_pbc(self.circuit, optimize_t_count=fuse_t, epsilon=eps)
 
         return
+
+
+class NWQECTranspilationLayer(BaseLayer):
+    def __init__(self, circuit, metadata):
+        self.circuit = circuit
+        self.metadata = metadata
+
+    def compile(self, keep_ccx: bool = False, eps: float = 1e-6):
+        self.circuit = nwqec.to_clifford_t(self.circuit, keep_ccx=keep_ccx, epsilon=eps)
+
+        return
