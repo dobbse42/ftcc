@@ -17,7 +17,7 @@ dependencies = [
 [tool.uv.sources]
 topologiq = { git = "https://github.com/tqec/topologiq" }
 tqec = { git = "https://github.com/tqec/tqec.git", rev = "e5d927e" }
-ucc = { git = "https://github.com/unitaryfoundation/ucc", rev = "596-nwqec-pass" }
+ucc = { git = "https://github.com/unitaryfoundation/ucc.git", rev = "596-nwqec-pass" }
 
 [dependency-groups]
 dev = [
@@ -30,10 +30,16 @@ pyzx = [
     "pyzx>=0.9.0",
 ]
 ucc = [
+    "qbraid==0.10.0",
     "ucc",
+    "urllib3>=2.6.2",
 ]
 topologiq = [
     "topologiq",
+    "qiskit==2.1.2"
+]
+qiskit_pbc = [
+    "qiskit>=2.3.0"
 ]
 
 [tool.uv]
@@ -41,7 +47,11 @@ conflicts = [
     [
         { group = "tqec" },
         { group = "ucc" },
-    ]
+    ],
+    [
+        { group = "topologiq" },
+        { group = "qiskit_pbc" }
+    ],
 ]
 
 [build-system]
