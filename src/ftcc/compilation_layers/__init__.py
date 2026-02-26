@@ -6,6 +6,7 @@ __all__ = [
     "UCCLayer",
     "NWQECPauliLayer",
     "QiskitPBCLayer",
+    "QiskitBicycleLayer",
 ]
 
 
@@ -24,4 +25,6 @@ def __getattr__(name):
         from .nwqec_layer import NWQECPauliLayer
     if name == "QiskitPBCLayer":
         from .qiskit_layer import QiskitPBCLayer
+    if name == "QiskitBicycleLayer":
+        from .qiskit_layer import QiskitBicycleLayer
     raise AttributeError(f"module {__name__} has no attribute {name}")
