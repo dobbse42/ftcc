@@ -2,6 +2,9 @@ import pytest
 
 import numpy as np
 from ftcc.compilation_layers.qiskit_layer import QiskitPBCLayer
+from ftcc.translation_layers.qiskit_pbc_to_bicycle import (
+    translate_qiskit_pbc_to_bicycle,
+)
 
 # from ftcc.translation_layers.mqt_to_qiskit_pbc import translate_mqt_to_qiskit_pbc
 from qiskit import QuantumCircuit as QiskitCircuit
@@ -62,6 +65,8 @@ def test_qiskit_pbc_random(N: int):
 
     assert Operator(qct) == Operator(qc)
 
+    print(qct)
+
     return
 
 
@@ -121,3 +126,40 @@ def test_qiskit_pbc_measure():
     expected.append(PauliProductMeasurement(Pauli("XX")), [0, 3], [3])
 
     assert qct == expected
+
+
+def test_qiskit_bicycle_translation():
+    qc = QiskitCircuit(4, 4)
+    qc.t(0)
+    qc.cx(2, 1)
+    qc.sxdg(3)
+    qc.cx(1, 0)
+    qc.sx(2)
+    qc.t(3)
+    qc.cx(3, 0)
+    qc.t(0)
+    qc.s(1)
+    qc.t(2)
+    qc.s(3)
+    qc.sxdg(0)
+    qc.sx(1)
+    qc.sx(2)
+    qc.sx(3)
+    qc.measure(0, 0)
+    qc.measure(1, 1)
+    qc.measure(2, 2)
+    qc.measure(3, 3)
+    # Apply the Litinski transform with fix_cliffords=False (ignoring the Clifford gates
+    # at the end of the transformed circuit, and clearing the global phase).
+    metadata = {
+        "code_name": "gross",
+        "code_n": 144,
+        "code_k": 12,
+        "code_d": 12,
+    }
+    qiskit_layer = QiskitPBCLayer(qc, metadata)
+    qiskit_layer.compile(fix_clifford=False)
+    bicycle_layer = translate_qiskit_pbc_to_bicycle(qiskit_layer)
+    bicycle_layer.compile()
+
+    print(bicycle_layer.circuit)

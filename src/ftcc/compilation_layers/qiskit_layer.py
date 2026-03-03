@@ -12,6 +12,11 @@ class QiskitPBCLayer(BaseLayer):
         self.circuit = circuit
 
     def compile(self, fix_clifford=True):
+        """
+        In general I think we will want fix_clifford to be False, though LitinskiTransform
+        has it True by default. For now we leave it as default True, but it's worth considering
+        changing the default behavior to better match users of this tool.
+        """
         lit = LitinskiTransformation(fix_clifford=fix_clifford)
         self.circuit = lit(self.circuit)
 
