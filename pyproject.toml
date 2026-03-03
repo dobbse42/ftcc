@@ -18,6 +18,7 @@ dependencies = [
 topologiq = { git = "https://github.com/tqec/topologiq" }
 tqec = { git = "https://github.com/tqec/tqec.git", rev = "e5d927e" }
 ucc = { git = "https://github.com/unitaryfoundation/ucc", rev = "596-nwqec-pass" }
+mqt-qecc = { git = "https://github.com/munich-quantum-toolkit/qecc" }
 
 [dependency-groups]
 dev = [
