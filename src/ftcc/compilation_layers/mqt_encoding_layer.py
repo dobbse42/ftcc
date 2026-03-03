@@ -25,11 +25,24 @@ class MQTEncodingLayer(BaseLayer):
 
         # steane_code = CSSCode.from_code_name("Steane")
         # qec_code = CSSCode.from_code_name(self.metadata['code_name'])
-        self.circuit, _ = depth_optimal_encoding_circuit(self.mqt_code, max_timeout=5)
+        self.circuit = depth_optimal_encoding_circuit(self.mqt_code, max_timeout=5)
+        # self.circuit, _ = depth_optimal_encoding_circuit(self.mqt_code, max_timeout=5)
 
-        self.metadata["num_qubits"] = self.circuit.num_qubits
+        self.metadata["num_qubits"] = self.circuit.num_qubits()
         self.metadata["num_ancilla"] = (
             self.metadata["num_qubits"] - self.metadata["code_n"]
         )
 
         return
+
+    def output(self, format="str", filename=None):
+        if format == "str":
+            to_return = self.circuit
+        elif format == "qasm":
+            to_return = self.circuit
+
+        if filename is not None:
+            with open(filename, "wb") as f:
+                f.write(to_return)
+
+        return to_return

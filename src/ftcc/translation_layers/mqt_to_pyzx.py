@@ -7,7 +7,7 @@ def translate_mqt_encoding_to_pyzx(mqt_encoding_layer):
     """
     Creates a PyZXLayer object from an MQTEncodingLayer object for a Steane code encoding circuit.
     """
-    mqt_circuit = mqt_encoding_layer.circuit
+    mqt_circuit = mqt_encoding_layer.circuit.to_qiskit_circuit()
     qasm_circuit = qasm2.dumps(mqt_circuit)
     zx_circuit = zx.Circuit.from_qasm(qasm_circuit)
 
