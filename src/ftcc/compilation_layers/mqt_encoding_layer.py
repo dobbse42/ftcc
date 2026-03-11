@@ -25,9 +25,11 @@ class MQTEncodingLayer(BaseLayer):
 
         # steane_code = CSSCode.from_code_name("Steane")
         # qec_code = CSSCode.from_code_name(self.metadata['code_name'])
-        self.circuit, _ = depth_optimal_encoding_circuit(self.mqt_code, max_timeout=5)
+        self.circuit = depth_optimal_encoding_circuit(
+            self.mqt_code, max_timeout=5
+        )  # this returns a CNOTCircuit
 
-        self.metadata["num_qubits"] = self.circuit.num_qubits
+        self.metadata["num_qubits"] = self.circuit.num_qubits()
         self.metadata["num_ancilla"] = (
             self.metadata["num_qubits"] - self.metadata["code_n"]
         )
