@@ -10,6 +10,20 @@ class QiskitPBCLayer(BaseLayer):
     def __init__(self, circuit, metadata):
         self.metadata = metadata
         self.circuit = circuit
+        self.compile_args = {"fix_clifford": True}
+        self.compilation_flags = {}
+
+    @classmethod
+    def compilation_flags(cls):
+        compilation_flags = {}
+        return compilation_flags
+
+    @classmethod
+    def set_compile_args(cls, flags):
+        compile_args = {"fix_clifford": True}
+        if flags["needs_unfixed_cliffords"]:
+            compile_args["fix_clifford"] = False
+        return compile_args
 
     def compile(self, fix_clifford=True):
         """
@@ -17,7 +31,7 @@ class QiskitPBCLayer(BaseLayer):
         has it True by default. For now we leave it as default True, but it's worth considering
         changing the default behavior to better match users of this tool.
         """
-        lit = LitinskiTransformation(fix_clifford=fix_clifford)
+        lit = LitinskiTransformation(fix_clifford=self.compile_args["fix_clifford"])
         self.circuit = lit(self.circuit)
 
         return
@@ -36,6 +50,22 @@ class QiskitBicycleLayer(BaseLayer):
     def __init__(self, circuit, metadata):
         self.metadata = metadata
         self.circuit = circuit
+        self.compilation_flags = {"needs_unfixed_cliffords": True}
+        self.compile_args = {}
+
+    @classmethod
+    def compilation_flags(cls):
+        """
+        Dummy init for checking compilation flags and determining compile args.
+        """
+        compilation_flags = {"needs_unfixed_cliffords": True}
+        return compilation_flags
+
+    @classmethod
+    def set_compile_args(cls, flags):
+        # print("got flags: ", flags.keys())
+        compile_args = {}
+        return compile_args
 
     def compile(self):
         # compile the rust binaries if they do not exist
