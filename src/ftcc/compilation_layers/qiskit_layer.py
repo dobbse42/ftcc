@@ -10,8 +10,8 @@ class QiskitPBCLayer(BaseLayer):
     def __init__(self, circuit, metadata):
         self.metadata = metadata
         self.circuit = circuit
-        self.compile_args = {"fix_clifford": True}
-        self.compilation_flags = {}
+        # self.compile_args = {"fix_clifford": True}
+        # self.compilation_flags = {}
 
     @classmethod
     def compilation_flags(cls):
@@ -25,7 +25,7 @@ class QiskitPBCLayer(BaseLayer):
             compile_args["fix_clifford"] = False
         return compile_args
 
-    def compile(self, fix_clifford=True):
+    def compile(self):
         """
         In general I think we will want fix_clifford to be False, though LitinskiTransform
         has it True by default. For now we leave it as default True, but it's worth considering

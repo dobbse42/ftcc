@@ -18,6 +18,16 @@ class MQTEncodingLayer(BaseLayer):
         self.metadata = metadata
         self.mqt_code = CSSCode.from_code_name(self.metadata["code_name"])
 
+    @classmethod
+    def set_compile_args(cls, flags):
+        compile_args = {}
+        return compile_args
+
+    @classmethod
+    def compilation_flags(cls):
+        compilation_flags = {}
+        return compilation_flags
+
     def compile(self):
         """
         Get an encoding circuit for the Steane code.

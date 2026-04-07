@@ -16,6 +16,16 @@ class TopologiqLayer(BaseLayer):
         self.circuit = input_circ
         self.metadata = metadata
 
+    @classmethod
+    def set_compile_args(cls, flags):
+        compile_args = {}
+        return compile_args
+
+    @classmethod
+    def compilation_flags(cls):
+        compilation_flags = {}
+        return compilation_flags
+
     def compile(self):
         """
         Com

@@ -10,6 +10,16 @@ class NWQECPauliLayer(BaseLayer):
         self.circuit = circuit
         self.metadata = metadata
 
+    @classmethod
+    def set_compile_args(cls, flags):
+        compile_args = {}
+        return compile_args
+
+    @classmethod
+    def compilation_flags(cls):
+        compilation_flags = {}
+        return compilation_flags
+
     def compile(self, eps=1e-6, fuse_t=False):
         """Unfortunately it is necessary to do weird stdout capture to catch any runtime errors
         since the C++ errors in nwqec are not properly exposed in python yet.

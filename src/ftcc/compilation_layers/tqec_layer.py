@@ -15,8 +15,17 @@ class TQECLayer(BaseLayer):
         """
 
         self.metadata = metadata
-
         self.filled_block_graph = filled_block_graph
+
+    @classmethod
+    def set_compile_args(cls, flags):
+        compile_args = {}
+        return compile_args
+
+    @classmethod
+    def compilation_flags(cls):
+        compilation_flags = {}
+        return compilation_flags
 
     def graphs_for_given_basis(
         self, pre_filled_block_graphs, observable_basis: Basis

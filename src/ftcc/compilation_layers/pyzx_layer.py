@@ -35,6 +35,16 @@ class PyZXLayer(BaseLayer):
             + '/' * (self.metadata['num_qubits'] - self.metadata['num_ancilla'])
         )"""
 
+    @classmethod
+    def set_compile_args(cls, flags):
+        compile_args = {}
+        return compile_args
+
+    @classmethod
+    def compilation_flags(cls):
+        compilation_flags = {}
+        return compilation_flags
+
     def compile(self, apply_effect=False, apply_state=False):
         """
         Applies optimizations on a PyZX graph.
