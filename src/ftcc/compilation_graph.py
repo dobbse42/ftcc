@@ -3,6 +3,11 @@ from matplotlib import pyplot as plt
 
 from typing import Optional
 
+from ftcc.compilation_layers import (
+    QiskitPBCLayer,
+    QiskitBicycleLayer,
+)
+
 
 class CompilationGraph:
     def __init__(
@@ -25,16 +30,18 @@ class CompilationGraph:
         """
         Creates a compilation graph of all known layers and translation layers except those specifed as excluded.
         """
-        graph = nx.Graph()
+        graph = nx.DiGraph()
 
-        graph.add_node("PyZX")
-        graph.add_node("MQT")
-        # graph.add_node("Qualtran")
-        graph.add_node("Topologiq")
-        graph.add_node("TQEC")
-        # graph.add_node("lsqecc")
-        # graph.add_node("TISCC")
-        # graph.add_node("Cirq")
+        graph.add_node("PyZXLayer")
+        graph.add_node("MQTLayer")
+        # graph.add_node("QualtranLayer")
+        graph.add_node("TopologiqLayer")
+        graph.add_node("TQECLayer")
+        # graph.add_node("lsqeccLayer")
+        # graph.add_node("TISCCLayer")
+        # graph.add_node("CirqLayer")
+        graph.add_node(QiskitPBCLayer)
+        graph.add_node(QiskitBicycleLayer)
 
         graph.add_edge("MQT", "PyZX")
         # graph.add_edge("Qualtran", "PyZX")
@@ -42,6 +49,7 @@ class CompilationGraph:
         graph.add_edge("PyZX", "Topologiq")
         graph.add_edge("Topologiq", "TQEC")
         # graph.add_edge("lsqecc", "TISCC")
+        graph.add_edge(QiskitPBCLayer, QiskitBicycleLayer)
 
         return graph
 
