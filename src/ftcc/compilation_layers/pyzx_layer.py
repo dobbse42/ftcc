@@ -21,6 +21,8 @@ class PyZXLayer(BaseLayer):
         elif isinstance(input_circ, zx.Circuit):
             # self.circuit = input_circ
             self.graph = input_circ.to_graph()
+        else:
+            raise RuntimeError("Invalid input IR to PyZXLayer")
 
         if "num_ancilla" not in self.metadata.keys():
             self.metadata["num_ancilla"] = 0

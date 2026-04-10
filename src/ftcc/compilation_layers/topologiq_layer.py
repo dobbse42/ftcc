@@ -35,23 +35,12 @@ class TopologiqLayer(BaseLayer):
             if "name" in self.metadata.keys()
             else "FT_circuit_name_placeholder"
         )
-        visualization = None
-        animation = None
 
-        VALUE_FUNCTION_HYPERPARAMS = (
-            -1,  # weight for length of path
-            -1,  # weight for number of "beams" broken by path
-        )
-
-        kwargs = {
-            "weights": VALUE_FUNCTION_HYPERPARAMS,
-            "length_of_beams": 9,
-        }
+        kwargs = {}
 
         simple_graph_after_use, edge_paths, lattice_nodes, lattice_edges = runner(
             self.circuit,
             circuit_name,
-            visualize=(visualization, animation),
             **kwargs,
         )
 

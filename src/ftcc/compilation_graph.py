@@ -6,6 +6,10 @@ from typing import Optional
 from ftcc.compilation_layers import (
     QiskitPBCLayer,
     QiskitBicycleLayer,
+    PyZXLayer,
+    TQECLayer,
+    TopologiqLayer,
+    MQTEncodingLayer,
 )
 
 
@@ -32,22 +36,22 @@ class CompilationGraph:
         """
         graph = nx.DiGraph()
 
-        graph.add_node("PyZXLayer")
-        graph.add_node("MQTLayer")
+        graph.add_node(PyZXLayer)
+        graph.add_node(MQTEncodingLayer)
         # graph.add_node("QualtranLayer")
-        graph.add_node("TopologiqLayer")
-        graph.add_node("TQECLayer")
+        graph.add_node(TopologiqLayer)
+        graph.add_node(TQECLayer)
         # graph.add_node("lsqeccLayer")
         # graph.add_node("TISCCLayer")
         # graph.add_node("CirqLayer")
         graph.add_node(QiskitPBCLayer)
         graph.add_node(QiskitBicycleLayer)
 
-        graph.add_edge("MQT", "PyZX")
+        graph.add_edge(MQTEncodingLayer, PyZXLayer)
         # graph.add_edge("Qualtran", "PyZX")
         # graph.add_edge("Qualtran", "Cirq")
-        graph.add_edge("PyZX", "Topologiq")
-        graph.add_edge("Topologiq", "TQEC")
+        graph.add_edge(PyZXLayer, TopologiqLayer)
+        graph.add_edge(TopologiqLayer, TQECLayer)
         # graph.add_edge("lsqecc", "TISCC")
         graph.add_edge(QiskitPBCLayer, QiskitBicycleLayer)
 

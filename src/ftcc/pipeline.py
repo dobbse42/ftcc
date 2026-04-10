@@ -92,6 +92,7 @@ class Pipeline:
 
     def get_compile_args(self, compilation_path):
         # initialize default flag dict, all are False by default
+        # TODO: refactor to import this from elsewhere and automate the addition of new flags
         flags = {"needs_unfixed_cliffords": False}
         args_dict = {}
 

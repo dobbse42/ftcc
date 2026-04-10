@@ -37,7 +37,7 @@ class TQECLayer(BaseLayer):
         elif observable_basis == Basis.Z:
             return filled_graphs[1].graph
 
-    def compile(self, observable_basis):
+    def compile(self, observable_basis=Basis.X):
         """
         aa
         """
