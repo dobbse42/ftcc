@@ -12,12 +12,14 @@ dependencies = [
     "pre-commit>=4.5.1",
     "qiskit>=2.1.2",
     "sympy>=1.14.0",
+    "nwqec",
 ]
 
 [tool.uv.sources]
 topologiq = { git = "https://github.com/tqec/topologiq" }
 tqec = { git = "https://github.com/tqec/tqec.git", rev = "e5d927e" }
 ucc = { git = "https://github.com/unitaryfoundation/ucc", rev = "596-nwqec-pass" }
+nwqec = { git = "https://github.com/pnnl/nwqec" }
 
 [dependency-groups]
 dev = [
