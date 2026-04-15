@@ -18,8 +18,8 @@ class TQECLayer(BaseLayer):
         self.filled_block_graph = filled_block_graph
 
     @classmethod
-    def set_compile_args(cls, flags):
-        compile_args = {}
+    def set_compile_args(cls, flags, compile_args):
+        # compile_args = {}
         return compile_args
 
     @classmethod
@@ -45,7 +45,13 @@ class TQECLayer(BaseLayer):
         block_graph_for_computation = self.graphs_for_given_basis(
             self.filled_block_graph, observable_basis
         )
-        compiled_graph = compile_block_graph(block_graph_for_computation)
+        try:
+            compiled_graph = compile_block_graph(block_graph_for_computation)
+        except NotImplementedError as inst:
+            print(inst)
+            raise RuntimeError(
+                "This error occurred because the circuit passed to TQEC called for operations which are not yet complete. Sometimes these operations are added probabilistically by previous compilation layers, and sometimes they are necessary. If the previous compilation layer requires a random seed (e.g. topologiq), try a different seed value. Otherwise, this compilation pipeline does not yet work for the input circuit."
+            )
         stim_circuit = compiled_graph.generate_stim_circuit(
             k=self.metadata["code_k"], noise_model=None
         )

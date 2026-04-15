@@ -30,12 +30,14 @@ class Pipeline:
         if final_node is not None:
             self.end_node = final_node
 
-    def compile(self, compilation_path=None, code_params=None):
+    def compile(self, compilation_path=None, code_params=None, compile_args=None):
         """
         A compilation path is a list of tuples of compilation layers and arguments for their compile() calls.
         """
         if compilation_path is None:
             compilation_path = self.find_compilation_path()
+        if compile_args is None:
+            compile_args = {}
 
         # check that compilation path is valid
         for i, (layer, successor) in enumerate(
@@ -48,7 +50,7 @@ class Pipeline:
                     compilation_path[:i] + intermediate_path + compilation_path[i:]
                 )
 
-        args_dict = self.get_compile_args(compilation_path)
+        args_dict = self.get_compile_args(compilation_path, compile_args)
 
         """successor = compilation_path[-1]
     for layer, rev_i in enumerate(reverse(compilation_path[:-1])):
@@ -90,18 +92,28 @@ class Pipeline:
         compiled_circuit = layer.circuit
         return compiled_circuit
 
-    def get_compile_args(self, compilation_path):
+    def get_compile_args(self, compilation_path, compile_args):
         # initialize default flag dict, all are False by default
         # TODO: refactor to import this from elsewhere and automate the addition of new flags
-        flags = {"needs_unfixed_cliffords": False}
+        flags = {
+            "needs_unfixed_cliffords": False,
+            "use_fixed_seed": False,
+            "use_more_attempts": False,
+        }
         args_dict = {}
+        for layer in compilation_path:
+            args_dict[layer] = {}
+
+        args_dict.update(compile_args)  # set user-specified compilation args
+        # TODO: check that all user-specified compile_args are real compilation args. This will avoid typos, etc.
 
         # check compile_args flags along the path
-        for layer in reversed(
-            compilation_path
-        ):  # this isn't working because layer is uninitialized. Need dummy objects.
-            args_dict.update({layer: layer.set_compile_args(flags)})
-            # print("layer args: ", args_dict[layer])
+        for layer in reversed(compilation_path):
+            # update required compilation args
+            # args_dict.update({layer: layer.set_compile_args(flags)})
+            # print("layer args before: ", args_dict[layer])
+            layer.set_compile_args(flags, args_dict[layer])
+            # print("layer args after: ", args_dict[layer])
             flags.update(
                 layer.compilation_flags()
             )  # for now only let flags affect predecessors, check back to front.

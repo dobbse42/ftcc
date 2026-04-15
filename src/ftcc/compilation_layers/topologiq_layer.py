@@ -17,8 +17,28 @@ class TopologiqLayer(BaseLayer):
         self.metadata = metadata
 
     @classmethod
-    def set_compile_args(cls, flags):
-        compile_args = {}
+    def set_compile_args(cls, flags, compile_args):
+        """
+        List of all possible compile_args:
+        compile_args = {
+            "weights": None,
+            "first_id_strategy": None,
+            "beams_len_short": None,
+            "seed": None,
+            "vis_options": None,
+            "max_attempts": None,
+            "stop_on_first_success": None,
+            "min_succ_rate": None,
+            "strip_ports": None,
+            "hide_ports": None,
+            "log_stats": None,
+            "log_stats_id": None,
+            "debug": None,
+        }"""
+        # compile_args = {"max_attempts": 5}
+        if flags["use_fixed_seed"]:
+            compile_args["seed"] = flags["fixed_seed_value"]
+
         return compile_args
 
     @classmethod
@@ -36,7 +56,7 @@ class TopologiqLayer(BaseLayer):
             else "FT_circuit_name_placeholder"
         )
 
-        kwargs = {}
+        kwargs = self.compile_args
 
         simple_graph_after_use, edge_paths, lattice_nodes, lattice_edges = runner(
             self.circuit,
@@ -45,7 +65,9 @@ class TopologiqLayer(BaseLayer):
         )
 
         if lattice_nodes is None or lattice_edges is None:
-            raise RuntimeError("topologiq failed")
+            raise RuntimeError(
+                "Topologiq timed out. Try again with more attempts (set the more_attempts compile arg) if you think this circuit should work. However, it may be the case that topologiq simply cannot compile this circuit."
+            )
         else:
             self.metadata["topologiq_edge_paths"] = edge_paths
             self.metadata["topologiq_lattice_nodes"] = lattice_nodes

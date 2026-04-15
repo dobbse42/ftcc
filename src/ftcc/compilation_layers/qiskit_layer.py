@@ -19,10 +19,16 @@ class QiskitPBCLayer(BaseLayer):
         return compilation_flags
 
     @classmethod
-    def set_compile_args(cls, flags):
-        compile_args = {"fix_clifford": True}
+    def set_compile_args(cls, flags, compile_args):
+        # compile_args = {"fix_clifford": True}
         if flags["needs_unfixed_cliffords"]:
+            if "fix_clifford" in compile_args.keys():
+                print(
+                    "Warning: user-specified compilation argument fix_clifford is being overridden due to pipeline requirements."
+                )  # TODO: Make this an actual warning, make this general for all args.
             compile_args["fix_clifford"] = False
+        else:
+            compile_args["fix_clifford"] = True
         return compile_args
 
     def compile(self):
@@ -62,9 +68,9 @@ class QiskitBicycleLayer(BaseLayer):
         return compilation_flags
 
     @classmethod
-    def set_compile_args(cls, flags):
+    def set_compile_args(cls, flags, compile_args):
         # print("got flags: ", flags.keys())
-        compile_args = {}
+        # compile_args = {}
         return compile_args
 
     def compile(self):

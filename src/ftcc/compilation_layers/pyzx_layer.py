@@ -38,8 +38,8 @@ class PyZXLayer(BaseLayer):
         )"""
 
     @classmethod
-    def set_compile_args(cls, flags):
-        compile_args = {}
+    def set_compile_args(cls, flags, compile_args):
+        # compile_args = {}
         return compile_args
 
     @classmethod
