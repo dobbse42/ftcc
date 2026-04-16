@@ -11,8 +11,7 @@ class NWQECPauliLayer(BaseLayer):
         self.metadata = metadata
 
     @classmethod
-    def set_compile_args(cls, flags):
-        compile_args = {}
+    def set_compile_args(cls, flags, compile_args):
         return compile_args
 
     @classmethod
@@ -33,6 +32,15 @@ class NWQECTranspilationLayer(BaseLayer):
     def __init__(self, circuit, metadata):
         self.circuit = circuit
         self.metadata = metadata
+
+    @classmethod
+    def set_compile_args(cls, flags, compile_args):
+        return compile_args
+
+    @classmethod
+    def compilation_flags(cls):
+        compilation_flags = {}
+        return compilation_flags
 
     def compile(self, keep_ccx: bool = False, eps: float = 1e-6):
         self.circuit = nwqec.to_clifford_t(self.circuit, keep_ccx=keep_ccx, epsilon=eps)

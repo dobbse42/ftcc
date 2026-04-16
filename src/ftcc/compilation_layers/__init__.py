@@ -48,4 +48,6 @@ def __getattr__(name):
     if name == "NWQECTranspilationLayer":
         from .nwqec_layer import NWQECTranspilationLayer
 
+        return NWQECTranspilationLayer
+
     raise AttributeError(f"module {__name__} has no attribute {name}")

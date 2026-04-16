@@ -9,7 +9,9 @@ import tempfile
 import ctypes
 
 from ftcc.compilation_layers.nwqec_layer import NWQECPauliLayer
-from ftcc.translation_layers.nwqec_to_bicycle import translate_nwqec_to_qiskit_bicycle
+from ftcc.translation_layers.nwqec_to_qiskit_bicycle import (
+    translate_nwqec_to_qiskit_bicycle,
+)
 
 allowed_nwqec_cliffords = ["h", "x", "y", "z", "cx", "s", "sdg", "sx", "sxdg"]
 
