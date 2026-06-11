@@ -1,8 +1,9 @@
-from ftcc.compilation_layers.pyzx_layer import PyZXLayer
+from ftcc.compilation_layers import PyZXLayer, TopologiqLayer, TQECLayer
 from ftcc.translation_layers.topologiq_to_tqec import translate_topologiq_to_tqec
 
 # from ftcc.translation_layers.pyzx_to_topologiq import PyZXToTopologiqTranslator
 from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
+from ftcc import Pipeline
 
 import qiskit.qasm2 as qasm2
 from qiskit import QuantumCircuit
@@ -49,13 +50,26 @@ metadata = {
     "num_qubits": 10,
     "num_ancilla": 3,
 }
-pyzx_layer = PyZXLayer(zx_graph, metadata=metadata)
+code_params = {
+    "n": 7,
+    "k": 1,
+    "d": 3,
+}
+
+"""pyzx_layer = PyZXLayer(zx_graph, metadata=metadata)
 pyzx_layer.compile()
 
 topologiq_layer = translate_pyzx_to_topologiq(pyzx_layer)
 topologiq_layer.compile()
 
 tqec_layer = translate_topologiq_to_tqec(topologiq_layer)
-tqec_layer.compile(Basis.X)  # basis could also potentially be specified in metadata
+tqec_layer.compile(Basis.X)  # basis could also potentially be specified in metadata"""
 
-print(tqec_layer.stim_circuit)
+compilation_path = [PyZXLayer, TopologiqLayer, TQECLayer]
+pipeline = Pipeline(zx_circuit)
+compiled_circuit = pipeline.compile(
+    compilation_path=compilation_path, code_params=code_params
+)
+
+print(compiled_circuit)
+# print(tqec_layer.stim_circuit)

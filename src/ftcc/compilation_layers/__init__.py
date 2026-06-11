@@ -8,6 +8,7 @@ __all__ = [
     "QiskitPBCLayer",
     "QiskitBicycleLayer",
     "NWQECTranspilationLayer",
+    "BaseLayer",
 ]
 
 
@@ -49,5 +50,10 @@ def __getattr__(name):
         from .nwqec_layer import NWQECTranspilationLayer
 
         return NWQECTranspilationLayer
+
+    if name == "BaseLayer":
+        from .base_layer import BaseLayer
+
+        return BaseLayer
 
     raise AttributeError(f"module {__name__} has no attribute {name}")

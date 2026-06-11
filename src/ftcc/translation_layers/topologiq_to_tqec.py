@@ -1,6 +1,6 @@
 from tqec.interop.collada.read_write import read_from_lattice_dicts
-from ftcc.compilation_layers.topologiq_layer import TopologiqLayer
-from ftcc.compilation_layers.tqec_layer import TQECLayer
+from ftcc.compilation_layers import TopologiqLayer
+from ftcc.compilation_layers import TQECLayer
 
 
 def translate_topologiq_to_tqec(topologiq_layer: TopologiqLayer):

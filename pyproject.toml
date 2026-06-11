@@ -13,10 +13,11 @@ dependencies = [
     "qiskit>=2.1.2",
     "sympy>=1.14.0",
     "nwqec",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.uv.sources]
-topologiq = { git = "https://github.com/tqec/topologiq" }
+topologiq = { git = "https://github.com/tqec/topologiq", rev = "15d3ed4" }
 # tqec = { git = "https://github.com/tqec/tqec.git", rev = "e5d927e" }
 ucc = { git = "https://github.com/unitaryfoundation/ucc.git", rev = "596-nwqec-pass" }
 mqt-qecc = { git = "https://github.com/munich-quantum-toolkit/qecc.git" }
@@ -25,11 +26,12 @@ nwqec = { git = "https://github.com/pnnl/nwqec" }
 [dependency-groups]
 dev = [
     "pytest>=9.0.1",
+    "tomli-w",
 ]
-tqec = [
+TQECLayer = [
     "tqec",
 ]
-pyzx = [
+PyZXLayer = [
     "pyzx>=0.9.0",
 ]
 ucc = [
@@ -37,26 +39,41 @@ ucc = [
     "ucc",
     "urllib3>=2.6.2",
 ]
-topologiq = [
+TopologiqLayer = [
     "topologiq",
     "qiskit==2.1.2"
 ]
-qiskit_pbc = [
+QiskitPBCLayer = [
+    "qiskit>=2.3.0"
+]
+QiskitBicycleLayer = [
     "qiskit>=2.3.0"
 ]
 
 [tool.uv]
 conflicts = [
     [
-        { group = "tqec" },
+        { group = "TQECLayer" },
         { group = "ucc" },
     ],
     [
-        { group = "topologiq" },
-        { group = "qiskit_pbc" }
+        { group = "TopologiqLayer" },
+        { group = "QiskitPBCLayer" }
     ],
+    [
+        { group = "TopologiqLayer" },
+        { group = "QiskitBicycleLayer" }
+    ]
 ]
 
+[tool.hatch.build.hooks.custom]
+path = "scripts/build_hook.py"
+
 [build-system]
-requires = ["uv_build >= 0.9.26, <0.10.0"]
-build-backend = "uv_build"
+requires = [
+    "hatchling",
+    "tomli-w",
+]
+build-backend = "hatchling.build"
+# requires = ["uv_build >= 0.9.26, <0.10.0"]
+# build-backend = "uv_build"

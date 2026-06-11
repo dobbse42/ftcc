@@ -1,7 +1,11 @@
 from ftcc import CompilationGraph
-from ftcc.translation_registry import translation_dictionary
+from ftcc.get_requirements import get_requirements
 import networkx as nx
 from collections import deque
+import os
+import subprocess
+import pickle
+import json
 
 
 class Pipeline:
@@ -26,7 +30,9 @@ class Pipeline:
             # infer final node if not specified
             # if final_node is None:
             #     self.end_node = device_IRs[device]
-            raise NotImplementedError
+            raise NotImplementedError(
+                "Device-specific compilation is not yet supported. Try again without specifying a device."
+            )
         if final_node is not None:
             self.end_node = final_node
 
@@ -50,16 +56,7 @@ class Pipeline:
                     compilation_path[:i] + intermediate_path + compilation_path[i:]
                 )
 
-        args_dict = self.get_compile_args(compilation_path, compile_args)
-
-        """successor = compilation_path[-1]
-    for layer, rev_i in enumerate(reverse(compilation_path[:-1])):
-      valid_step = (successor in compilation_path.neighbors(layer))
-      # if compilation path is not valid, do pathfinding for missing links
-      if not valid_step:
-        intermediate_path = find_path(layer, successor)
-        compilation_path = compilation_path[:-rev_i] + intermediate_path + compilation_path[-rev_i:]
-      successor = layer"""
+        # args_dict = self.get_compile_args(compilation_path, compile_args) # this is now done at compile-time
 
         # set up metadata
         metadata = {}
@@ -74,31 +71,81 @@ class Pipeline:
             metadata["code_n"] = code_params["n"]
             metadata["code_k"] = code_params["k"]
             metadata["code_d"] = code_params["d"]
-        # set up the first layer
-        layer_type = compilation_path[0]
-        layer = layer_type(self.circuit, metadata)
+            metadata["code_name"] = (
+                code_params["name"]
+                if "name" in code_params.keys()
+                else "unknown_code_name"
+            )
+        # get dependency list
+        get_requirements(compilation_path)
+        # ---- breakpoint if user wants to handle environment setup themselves ----
+        # all names should be based on name information in metadata..
+        config_filename = "placeholder_config_name.json"
+        circuit_filename = "placeholder_circuit_name.pkl"
+        requirements_filename = "compilation_requirements.txt"
+        venv_name = "placeholder_venv_name"
+        output_filename = "placeholder_output_name.pkl"
 
-        # call each compilation layer and translation layer with appropriate args, returning any exceptions raised
-        for successor in compilation_path[1:]:
-            # print("layer: ", layer)
-            layer.compile_args = args_dict[
-                layer_type
-            ]  # I don't like that this directly mutates properties of the object
-            layer.compile()
-            layer = translation_dictionary[layer_type, successor](layer)
-            layer_type = successor
-        layer.compile()
-        # return the compiled circuit
-        compiled_circuit = layer.circuit
-        return compiled_circuit
+        # create venv
+        subprocess.run(["uv", "venv", venv_name], check=True)
+        # install dependencies
+        subprocess.run(
+            [
+                "uv",
+                "pip",
+                "install",
+                "--python",
+                venv_name,
+                "-r",
+                requirements_filename,
+            ],
+            check=True,
+        )
+        # subprocess.run(["uv", "pip", "install", "--python", venv_name, "."], check=True) # install ftcc
+        config = {
+            "circuit_filename": circuit_filename,
+            "compilation_path": compilation_path,
+            "metadata": metadata,
+            "compile_args": compile_args,
+            "output_filename": output_filename,
+        }
 
-    def get_compile_args(self, compilation_path, compile_args):
+        # dump circuit info
+        with open(circuit_filename, "wb") as f:
+            pickle.dump(self.circuit, f)
+        # dump config info
+        with open(config_filename, "w") as f:
+            f.write(json.dumps(config))
+
+        # ---- breakpoint if user wants to do the compilation themselves ----
+        # run compilation
+        subprocess.run(
+            [
+                "uv",
+                "run",
+                "--python",
+                venv_name,
+                "python",
+                "-m",
+                "ftcc.run_with_venv",
+                config_filename,
+            ],
+            check=True,
+        )
+
+        print("compilation run complete")
+        with open(output_filename, "rb") as f:
+            compiled_circuit = pickle.load(f)
+        print(compiled_circuit)
+        return
+
+    """def get_compile_args(self, compilation_path, compile_args):
         # initialize default flag dict, all are False by default
         # TODO: refactor to import this from elsewhere and automate the addition of new flags
         flags = {
-            "needs_unfixed_cliffords": False,
-            "use_fixed_seed": False,
-            "use_more_attempts": False,
+            'needs_unfixed_cliffords': False,
+            'use_fixed_seed': False,
+            'use_more_attempts': False,
         }
         args_dict = {}
         for layer in compilation_path:
@@ -108,19 +155,20 @@ class Pipeline:
         # TODO: check that all user-specified compile_args are real compilation args. This will avoid typos, etc.
 
         # check compile_args flags along the path
-        for layer in reversed(compilation_path):
+        for layer_name in reversed(compilation_path):
+            layer = compilation_registry[layer_name]
             # update required compilation args
             # args_dict.update({layer: layer.set_compile_args(flags)})
-            # print("layer args before: ", args_dict[layer])
-            layer.set_compile_args(flags, args_dict[layer])
-            # print("layer args after: ", args_dict[layer])
+            # print('layer args before: ', args_dict[layer])
+            layer.set_compile_args(flags, args_dict[layer_name])
+            # print('layer args after: ', args_dict[layer])
             flags.update(
                 layer.compilation_flags()
             )  # for now only let flags affect predecessors, check back to front.
-            # print("flags: ", flags)
-        return args_dict
+            # print('flags: ', flags)
+        return args_dict"""
 
-    def find_compilation_graph(self):
+    def find_compilation_path(self):
         return self.find_path(self.start_node, self.end_node)
 
     def find_path(self, start, end):
@@ -128,4 +176,16 @@ class Pipeline:
         For now this is done very simply since the graph is small.
         Returns: list of connected nodes with start at the 0th index and end at the -1th index.
         """
-        return nx.shortest_path(self.compilation_graph.graph, source=start, target=end)
+        try:
+            path = nx.shortest_path(
+                self.compilation_graph.graph, source=start, target=end
+            )
+        except nx.exception.NodeNotFound:
+            raise NotImplementedError(
+                "One of the nodes specified in the compilation path does not exist in ftcc. You may have a typo in a layer name, or you may be trying to use a tool which is not yet implemented in ftcc. To see a list of tools implemented in ftcc, print the compilation graph."
+            )
+        except nx.exception.NetworkXNoPath:
+            raise RuntimeError(
+                f"No path exists between the specified nodes {start} and {end}."
+            )
+        return path

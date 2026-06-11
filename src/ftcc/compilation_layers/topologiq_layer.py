@@ -36,8 +36,6 @@ class TopologiqLayer(BaseLayer):
             "debug": None,
         }"""
         # compile_args = {"max_attempts": 5}
-        if flags["use_fixed_seed"]:
-            compile_args["seed"] = flags["fixed_seed_value"]
 
         return compile_args
 

@@ -4,7 +4,7 @@ import numpy as np
 import json
 from collections.abc import Iterator
 
-from ftcc.compilation_layers.qiskit_layer import QiskitPBCLayer, QiskitBicycleLayer
+from ftcc.compilation_layers import QiskitPBCLayer, QiskitBicycleLayer
 
 
 def translate_qiskit_pbc_to_bicycle(pbc_layer: QiskitPBCLayer):

@@ -9,6 +9,7 @@ from ftcc.compilation_layers.qiskit_layer import QiskitBicycleLayer, QiskitPBCLa
 from ftcc.translation_layers.qiskit_pbc_to_bicycle import (
     translate_qiskit_pbc_to_bicycle,
 )
+from ftcc import Pipeline
 
 
 def test_bicycle_simple():
@@ -42,15 +43,19 @@ def test_qiskit_pbc_bicycle_translation(N: int):
         qc.compose(clifford_circuit, inplace=True)
         qc.t(0)
         qc.tdg(1)
-    metadata = {
-        "code_name": "gross",
-        "code_n": 144,
-        "code_k": 12,
-        "code_d": 12,
+    code_params = {
+        "name": "gross",
+        "n": 144,
+        "k": 12,
+        "d": 12,
     }
-
-    pbc_layer = QiskitPBCLayer(qc, metadata)
-    pbc_layer.compile(fix_clifford=False)
-    bicycle_layer = translate_qiskit_pbc_to_bicycle(pbc_layer)
-    bicycle_layer.compile()
-    print(bicycle_layer.circuit)
+    pipeline = Pipeline(qc)
+    compilation_path = [QiskitPBCLayer, QiskitBicycleLayer]
+    compiled_circuit = pipeline.compile(
+        compilation_path=compilation_path, code_params=code_params
+    )
+    # pbc_layer = QiskitPBCLayer(qc, metadata)
+    # pbc_layer.compile(fix_clifford=False)
+    # bicycle_layer = translate_qiskit_pbc_to_bicycle(pbc_layer)
+    # bicycle_layer.compile()
+    print(compiled_circuit)

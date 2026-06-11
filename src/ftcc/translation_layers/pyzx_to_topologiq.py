@@ -1,5 +1,5 @@
 from topologiq.utils.interop_pyzx import pyzx_g_to_simple_g
-from ftcc.compilation_layers.topologiq_layer import TopologiqLayer
+from ftcc.compilation_layers import TopologiqLayer
 
 
 def translate_pyzx_to_topologiq(pyzx_layer):
@@ -14,6 +14,7 @@ def translate_pyzx_to_topologiq(pyzx_layer):
     )"""
     # pyzx_layer.compile(apply_state=True, apply_effect=True)
     simple_graph = pyzx_g_to_simple_g(pyzx_layer.graph)
+    print(simple_graph)
     topologiq_layer = TopologiqLayer(simple_graph, metadata=pyzx_layer.metadata)
 
     return topologiq_layer
