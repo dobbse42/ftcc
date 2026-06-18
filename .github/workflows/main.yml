@@ -31,10 +31,10 @@ jobs:
         run: uv run pre-commit run --all-files
 
       - name: Run pipeline tests with coverage
-        run: uv run --group PyZXLayer --group dev --group QiskitBicycleLayer --group QiskitPBCLayer --group NWQECTranspilationLayer --group NWQECPauliLayer pytest --cov --cov-branch --cov-report=xml tests/build
+        run: uv run --group PyZXLayer --group dev --group QiskitBicycleLayer --group QiskitPBCLayer --group NWQECTranspilationLayer --group NWQECPauliLayer pytest --cov --cov-branch --cov-report=xml -m build
 
       - name: Run lattice surgery tests with coverage
-        run: uv run --group PyZXLayer --group TopologiqLayer --group TQECLayer pytest --cov --cov-branch --cov-append tests/lattice_surgery
+        run: uv run --group PyZXLayer --group TopologiqLayer --group TQECLayer pytest --cov --cov-branch --cov-append -m lattice_surgery
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6
