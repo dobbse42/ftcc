@@ -14,6 +14,9 @@ from qiskit.circuit.library import PauliProductMeasurement, PauliEvolutionGate
 from qiskit.circuit.random import random_clifford_circuit
 
 
+pytestmark = pytest.mark.build
+
+
 def test_qiskit_pbc_t():
     """
     Adapted from test_litinski_transformation.py in Qiskit 2.3

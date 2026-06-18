@@ -13,6 +13,8 @@ from ftcc.translation_layers.nwqec_to_qiskit_bicycle import (
     translate_nwqec_to_qiskit_bicycle,
 )
 
+pytestmark = pytest.mark.build
+
 allowed_nwqec_cliffords = ["h", "x", "y", "z", "cx", "s", "sdg", "sx", "sxdg"]
 
 

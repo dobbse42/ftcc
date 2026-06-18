@@ -77,6 +77,12 @@ conflicts = [
     ]
 ]
 
+[tool.pytest.ini_options]
+markers = [
+    "build: basic build_tests",
+    "lattice_surgery: tests using lattice surgery tools"
+]
+
 [tool.hatch.build.hooks.custom]
 path = "scripts/build_hook.py"
 

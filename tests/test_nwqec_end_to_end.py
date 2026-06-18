@@ -16,6 +16,9 @@ from ftcc.translation_layers.nwqec_transpilation_to_pauli import (
 from ftcc import Pipeline
 
 
+pytestmark = pytest.mark.build
+
+
 def generate_random_nwqec_circuit(N: int):
     qiskit_circuit = random_circuit(
         N, N**2, measure=False, conditional=False, reset=False, seed=42

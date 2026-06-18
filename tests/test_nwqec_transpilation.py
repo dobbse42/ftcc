@@ -8,6 +8,9 @@ import tempfile
 from ftcc.compilation_layers.nwqec_layer import NWQECTranspilationLayer
 
 
+pytestsmark = pytest.mark.build
+
+
 @pytest.mark.parametrize("N", [3, 5, 7, 9, 11])
 def test_cliffordt(N: int):
     """

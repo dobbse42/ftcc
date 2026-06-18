@@ -3,6 +3,7 @@
 
 # from ftcc.translation_layers.pyzx_to_topologiq import PyZXToTopologiqTranslator
 # from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
+import pytest
 from ftcc import Pipeline
 
 import qiskit.qasm2 as qasm2
@@ -11,6 +12,8 @@ import pyzx as zx
 # from tqec.utils.enums import Basis
 
 # Define encoding circuit for steane code. This is an example of something that could be convertd to an encoding circuit layer.
+
+pytestmark = pytest.mark.lattice_surgery
 
 qc = QuantumCircuit(10)
 qc.h(0)

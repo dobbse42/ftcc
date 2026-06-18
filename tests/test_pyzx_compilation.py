@@ -7,6 +7,8 @@ from pyzx.generate import CNOT_HAD_PHASE_circuit, cliffordT
 
 from ftcc.compilation_layers.pyzx_layer import PyZXLayer
 
+pytestmark = pytest.mark.build
+
 
 def random_area_law_circuit(N, seed=42):
     """

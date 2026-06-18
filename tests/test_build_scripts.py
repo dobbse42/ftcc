@@ -23,6 +23,8 @@ import pyzx as zx
     BaseLayer,
 )"""
 
+pytestmark = pytest.mark.build
+
 
 def generate_random_nwqec_circuit(N: int):
     qiskit_circuit = random_circuit(

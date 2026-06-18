@@ -18,6 +18,9 @@ from ftcc.compilation_layers import (
 from ftcc import Pipeline
 
 
+pytestmark = pytest.mark.build
+
+
 @pytest.mark.parametrize("N", [3, 4, 5])
 def test_pipeline_compile(N: int):
     # create random test circuit
@@ -77,7 +80,7 @@ def test_pipeline_ls():
     zx_circuit = zx.Circuit.from_qasm(qasm_str)
 
     pipeline = Pipeline(zx_circuit)
-    compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
+    compilation_path = ['PyZXLayer"TopologiqLayer', "TQECLayer"]
     output_filename = "test_compile_ls.out"
 
     pipeline.compile(compilation_path, code_params, output_filename=output_filename)

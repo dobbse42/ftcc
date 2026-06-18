@@ -13,6 +13,9 @@ from ftcc.translation_layers.qiskit_pbc_to_bicycle import (
 from ftcc import Pipeline
 
 
+pytestmark = pytest.mark.build
+
+
 def test_bicycle_simple():
     circuit = """{"Rotation":{"basis":["X","X","I","I","I","I","I","I","I","I","I","Y"],"angle":"0.125"}}
     {"Rotation":{"basis":["Z","Z","I","I","I","I","I","I","I","I","I","I"],"angle":"0.5"}}
