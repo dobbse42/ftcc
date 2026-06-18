@@ -6,13 +6,10 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "autqec>=1.0.1",
-    "mqt>=0.1.1",
-    "mqt-qecc>=1.9.0",
     "networkx>=3.5",
     "pre-commit>=4.5.1",
     "qiskit>=2.1.2",
     "sympy>=1.14.0",
-    "nwqec",
     "pytest-cov>=7.1.0",
 ]
 
@@ -54,6 +51,10 @@ NWQECTranspilationLayer = [
 ]
 NWQECPauliLayer = [
     "nwqec",
+]
+MQTLayer = [
+    "mqt>=0.1.1",
+    "mqt-qecc>=1.9.0",
 ]
 
 [tool.uv]
