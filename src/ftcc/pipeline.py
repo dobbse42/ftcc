@@ -1,5 +1,6 @@
 from ftcc import CompilationGraph
 from ftcc.get_requirements import get_requirements
+from ftcc.compilation_registry import valid_start_nodes
 import networkx as nx
 from collections import deque
 import os
@@ -36,10 +37,24 @@ class Pipeline:
         if final_node is not None:
             self.end_node = final_node
 
-    def compile(self, compilation_path=None, code_params=None, compile_args=None):
+    def compile(
+        self,
+        compilation_path=None,
+        code_params=None,
+        compile_args=None,
+        manual_compile=False,
+        requirements_filename=None,
+        config_filename=None,
+        circuit_filename=None,
+        output_filename=None,
+        print_output=False,
+    ):
         """
         A compilation path is a list of tuples of compilation layers and arguments for their compile() calls.
         """
+
+        requirements_filename = "compilation_requirements.txt"
+
         if compilation_path is None:
             compilation_path = self.find_compilation_path()
         if compile_args is None:
@@ -51,10 +66,15 @@ class Pipeline:
         ):
             valid_step = successor in self.compilation_graph.graph.neighbors(layer)
             if not valid_step:
+                # print("not a valid step!")
                 intermediate_path = self.find_path(layer, successor)
+                # print(f"intermediate path is {intermediate_path}")
                 compilation_path = (
                     compilation_path[:i] + intermediate_path + compilation_path[i:]
                 )
+        assert compilation_path[0] in valid_start_nodes, (
+            f"{compilation_path[0]} is not a valid start node."
+        )
 
         # args_dict = self.get_compile_args(compilation_path, compile_args) # this is now done at compile-time
 
@@ -77,30 +97,16 @@ class Pipeline:
                 else "unknown_code_name"
             )
         # get dependency list
-        get_requirements(compilation_path)
-        # ---- breakpoint if user wants to handle environment setup themselves ----
-        # all names should be based on name information in metadata..
-        config_filename = "placeholder_config_name.json"
-        circuit_filename = "placeholder_circuit_name.pkl"
-        requirements_filename = "compilation_requirements.txt"
-        venv_name = "placeholder_venv_name"
-        output_filename = "placeholder_output_name.pkl"
+        get_requirements(compilation_path, requirements_filename)
 
-        # create venv
-        subprocess.run(["uv", "venv", venv_name], check=True)
-        # install dependencies
-        subprocess.run(
-            [
-                "uv",
-                "pip",
-                "install",
-                "--python",
-                venv_name,
-                "-r",
-                requirements_filename,
-            ],
-            check=True,
-        )
+        # all names should be based on name information in metadata..
+        if config_filename is None:
+            config_filename = "placeholder_config_name.json"
+        if circuit_filename is None:
+            circuit_filename = "placeholder_circuit_name.pkl"
+        if output_filename is None:
+            output_filename = "placeholder_output_name.pkl"
+
         # subprocess.run(["uv", "pip", "install", "--python", venv_name, "."], check=True) # install ftcc
         config = {
             "circuit_filename": circuit_filename,
@@ -112,19 +118,29 @@ class Pipeline:
 
         # dump circuit info
         with open(circuit_filename, "wb") as f:
-            pickle.dump(self.circuit, f)
+            try:
+                pickle.dump(self.circuit, f)
+            except TypeError:
+                raise TypeError(
+                    "Something went wrong when pickling the input circuit. Most likely you are passing the input circuit in a format which cannot be pickled. Check the accepted input formats of the first compilation layer in your compilation path and make sure you pass the input circuit in one of the formats which can be pickled."
+                )
         # dump config info
         with open(config_filename, "w") as f:
             f.write(json.dumps(config))
 
         # ---- breakpoint if user wants to do the compilation themselves ----
+        if manual_compile:
+            print(
+                f"Requirements contained in {requirements_filename}. Stopping here. Manual compilation can be performed by `uv run --with-requirements {requirements_filename} python -m ftcc.run_with_venv {config_filename}`"
+            )
+            return
         # run compilation
         subprocess.run(
             [
                 "uv",
                 "run",
-                "--python",
-                venv_name,
+                "--with-requirements",
+                requirements_filename,
                 "python",
                 "-m",
                 "ftcc.run_with_venv",
@@ -136,7 +152,8 @@ class Pipeline:
         print("compilation run complete")
         with open(output_filename, "rb") as f:
             compiled_circuit = pickle.load(f)
-        print(compiled_circuit)
+        if print_output:
+            print(compiled_circuit)
         return
 
     """def get_compile_args(self, compilation_path, compile_args):
@@ -176,6 +193,7 @@ class Pipeline:
         For now this is done very simply since the graph is small.
         Returns: list of connected nodes with start at the 0th index and end at the -1th index.
         """
+        # print(f"finding path from {start} to {end}")
         try:
             path = nx.shortest_path(
                 self.compilation_graph.graph, source=start, target=end
@@ -188,4 +206,7 @@ class Pipeline:
             raise RuntimeError(
                 f"No path exists between the specified nodes {start} and {end}."
             )
+        except Exception as e:
+            print("Got some unexpected exception.")
+            raise e
         return path

@@ -3,12 +3,14 @@ from ftcc.compilation_layers.base_layer import BaseLayer
 
 import io
 import contextlib
+import tempfile
 
 
 class NWQECPauliLayer(BaseLayer):
     def __init__(self, circuit, metadata):
         self.circuit = circuit
         self.metadata = metadata
+        self.VALID_START_NODE = False
 
     @classmethod
     def set_compile_args(cls, flags, compile_args):
@@ -30,7 +32,19 @@ class NWQECPauliLayer(BaseLayer):
 
 class NWQECTranspilationLayer(BaseLayer):
     def __init__(self, circuit, metadata):
-        self.circuit = circuit
+        # assumes any strings passed are qasm strings. TODO: optionally accept qasm filenames?
+        if isinstance(circuit, str):
+            # print("circuit str: ", circuit)
+            with tempfile.NamedTemporaryFile(mode="w+") as tmp:
+                tmp.write(circuit)
+                # print("tempfile contents: ")
+                tmp.read()
+                # print("everything else: ")
+                self.circuit = nwqec.load_qasm(
+                    tmp.name
+                )  # nwqec only reads qasm files, not strings.
+        else:  # circuit is an nwqec circuit already
+            self.circuit = circuit
         self.metadata = metadata
 
     @classmethod

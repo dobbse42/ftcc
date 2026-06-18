@@ -41,13 +41,19 @@ ucc = [
 ]
 TopologiqLayer = [
     "topologiq",
-    "qiskit==2.1.2"
+    "qiskit==2.1.2",
 ]
 QiskitPBCLayer = [
-    "qiskit>=2.3.0"
+    "qiskit>=2.3.0",
 ]
 QiskitBicycleLayer = [
-    "qiskit>=2.3.0"
+    "qiskit>=2.3.0",
+]
+NWQECTranspilationLayer = [
+    "nwqec",
+]
+NWQECPauliLayer = [
+    "nwqec",
 ]
 
 [tool.uv]

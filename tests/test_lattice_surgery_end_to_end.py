@@ -1,14 +1,14 @@
-from ftcc.compilation_layers import PyZXLayer, TopologiqLayer, TQECLayer
-from ftcc.translation_layers.topologiq_to_tqec import translate_topologiq_to_tqec
+# from ftcc.compilation_layers import PyZXLayer, TopologiqLayer, TQECLayer
+# from ftcc.translation_layers.topologiq_to_tqec import translate_topologiq_to_tqec
 
 # from ftcc.translation_layers.pyzx_to_topologiq import PyZXToTopologiqTranslator
-from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
+# from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
 from ftcc import Pipeline
 
 import qiskit.qasm2 as qasm2
 from qiskit import QuantumCircuit
 import pyzx as zx
-from tqec.utils.enums import Basis
+# from tqec.utils.enums import Basis
 
 # Define encoding circuit for steane code. This is an example of something that could be convertd to an encoding circuit layer.
 
@@ -65,10 +65,10 @@ topologiq_layer.compile()
 tqec_layer = translate_topologiq_to_tqec(topologiq_layer)
 tqec_layer.compile(Basis.X)  # basis could also potentially be specified in metadata"""
 
-compilation_path = [PyZXLayer, TopologiqLayer, TQECLayer]
+compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
 pipeline = Pipeline(zx_circuit)
 compiled_circuit = pipeline.compile(
-    compilation_path=compilation_path, code_params=code_params
+    compilation_path=compilation_path, code_params=code_params, manual_compile=True
 )
 
 print(compiled_circuit)

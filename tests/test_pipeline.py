@@ -1,4 +1,6 @@
 import pytest
+import warnings
+import pickle
 from qiskit import QuantumCircuit as QiskitCircuit
 from qiskit.circuit.random import random_clifford_circuit
 import qiskit.qasm2 as qasm2
@@ -7,10 +9,10 @@ import pyzx as zx
 from ftcc.compilation_layers import (
     QiskitPBCLayer,
     QiskitBicycleLayer,
-    MQTEncodingLayer,
-    TopologiqLayer,
-    TQECLayer,
-    PyZXLayer,
+    # MQTEncodingLayer,
+    # TopologiqLayer,
+    # TQECLayer,
+    # PyZXLayer,
     BaseLayer,
 )
 from ftcc import Pipeline
@@ -30,12 +32,16 @@ def test_pipeline_compile(N: int):
 
     # create pipeline
     pipeline = Pipeline(qc)
-    compilation_path = [QiskitPBCLayer, QiskitBicycleLayer]
+    compilation_path = ["QiskitPBCLayer", "QiskitBicycleLayer"]
+    output_filename = "test_pipeline_compile.out"
 
     # run pipeline
-    compiled_circuit = pipeline.compile(compilation_path=compilation_path)
+    pipeline.compile(compilation_path=compilation_path, output_filename=output_filename)
 
+    with open(output_filename, "rb") as f:
+        compiled_circuit = pickle.load(f)
     print(compiled_circuit)
+
     return
 
 
@@ -71,10 +77,15 @@ def test_pipeline_ls():
     zx_circuit = zx.Circuit.from_qasm(qasm_str)
 
     pipeline = Pipeline(zx_circuit)
-    compilation_path = [PyZXLayer, TopologiqLayer, TQECLayer]
+    compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
+    output_filename = "test_compile_ls.out"
 
-    compiled_circuit = pipeline.compile(compilation_path, code_params)
+    pipeline.compile(compilation_path, code_params, output_filename=output_filename)
+
+    with open(output_filename, "rb") as f:
+        compiled_circuit = pickle.load(f)
     print(compiled_circuit)
+
     return
 
 
@@ -110,13 +121,18 @@ def test_pipeline_compile_args():
     zx_circuit = zx.Circuit.from_qasm(qasm_str)
 
     pipeline = Pipeline(zx_circuit)
-    compilation_path = [PyZXLayer, TopologiqLayer, TQECLayer]
+    compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
     args_dict = {
-        TopologiqLayer: {"max_attempts": 1, "seed": 42},
+        "TopologiqLayer": {"max_attempts": 1, "seed": 42},
     }
+    output_filename = "test_compile_args.out"
 
     try:
-        compiled_circuit = pipeline.compile(compilation_path, code_params, args_dict)
+        pipeline.compile(
+            compilation_path, code_params, args_dict, output_filename=output_filename
+        )
+        with open(output_filename, "rb") as f:
+            compiled_circuit = pickle.load(f)
         print(compiled_circuit)
     except Exception as err:
         assert str(err)[:19] == "Topologiq timed out"
@@ -138,13 +154,15 @@ def test_mandatory_compile_args(N: int):
 
     # create pipeline
     pipeline = Pipeline(qc)
-    compilation_path = [QiskitPBCLayer, QiskitBicycleLayer]
+    compilation_path = ["QiskitPBCLayer", "QiskitBicycleLayer"]
     args_dict = {
-        QiskitPBCLayer: {"fix_clifford": True},
+        "QiskitPBCLayer": {"fix_clifford": False},
     }
 
     # run pipeline
-    _ = pipeline.compile(compilation_path=compilation_path, compile_args=args_dict)
+    pipeline.compile(
+        compilation_path=compilation_path, compile_args=args_dict
+    )  # this should raise a Runtime Warning
 
     # print(compiled_circuit)
     return
@@ -182,10 +200,10 @@ def test_pathfinding():
     zx_circuit = zx.Circuit.from_qasm(qasm_str)
 
     pipeline = Pipeline(zx_circuit)
-    compilation_path = [PyZXLayer, TQECLayer]
+    compilation_path = ["PyZXLayer", "TQECLayer"]
 
     # This should do pathfinding to find TopologiqLayer connecting PyZXLayer with TQECLayer.
-    _ = pipeline.compile(compilation_path=compilation_path, code_params=code_params)
+    pipeline.compile(compilation_path=compilation_path, code_params=code_params)
 
     return
 
@@ -205,7 +223,7 @@ def test_invalid_path():
 
     pipeline = Pipeline(qc)
     # Clearly QiskitCircuit is not a layer and is not present in the compilation graph.
-    compilation_path = [TQECLayer, QiskitCircuit]
+    compilation_path = ["TQECLayer", "QiskitCircuit"]
 
     try:
         pipeline.compile(compilation_path)
@@ -215,11 +233,11 @@ def test_invalid_path():
             == "One of the nodes specified in the compilation path does not exist in ftcc. You may have a typo in a layer name, or you may be trying to use a tool which is not yet implemented in ftcc. To see a list of tools implemented in ftcc, print the compilation graph."
         )
 
-    compilation_path = [BaseLayer, TQECLayer]
+    compilation_path = ["BaseLayer", "TQECLayer"]
 
     try:
         pipeline.compile(compilation_path)
     except Exception as err:
         # print(err)
-        assert str(err)[:14] == "No path exists"
+        assert str(err)[:14] == "No path exists", f"Actual exception was {err}"
     return

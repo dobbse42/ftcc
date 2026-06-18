@@ -1,5 +1,6 @@
 import pytest
 from qiskit import QuantumCircuit as QiskitCircuit
+import pickle
 
 # from qiskit.quantum_info import Operator, SparseObservable, Pauli
 # from qiskit.circuit.library import PauliProductMeasurement, PauliEvolutionGate
@@ -50,10 +51,15 @@ def test_qiskit_pbc_bicycle_translation(N: int):
         "d": 12,
     }
     pipeline = Pipeline(qc)
-    compilation_path = [QiskitPBCLayer, QiskitBicycleLayer]
-    compiled_circuit = pipeline.compile(
-        compilation_path=compilation_path, code_params=code_params
+    compilation_path = ["QiskitPBCLayer", "QiskitBicycleLayer"]
+    output_filename = "qiskit_pbc_bicycle_test.out"
+    pipeline.compile(
+        compilation_path=compilation_path,
+        code_params=code_params,
+        output_filename=output_filename,
     )
+    with open(output_filename, "rb") as f:
+        compiled_circuit = pickle.load(f)
     # pbc_layer = QiskitPBCLayer(qc, metadata)
     # pbc_layer.compile(fix_clifford=False)
     # bicycle_layer = translate_qiskit_pbc_to_bicycle(pbc_layer)

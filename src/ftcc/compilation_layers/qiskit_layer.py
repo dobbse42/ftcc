@@ -4,12 +4,14 @@ import qiskit
 from qiskit.transpiler.passes import LitinskiTransformation
 import os
 import subprocess
+import warnings
 
 
 class QiskitPBCLayer(BaseLayer):
     def __init__(self, circuit, metadata):
         self.metadata = metadata
         self.circuit = circuit
+        self.VALID_START_NODE = True
         # self.compile_args = {"fix_clifford": True}
         # self.compilation_flags = {}
 
@@ -23,9 +25,10 @@ class QiskitPBCLayer(BaseLayer):
         # compile_args = {"fix_clifford": True}
         if flags["needs_unfixed_cliffords"]:
             if "fix_clifford" in compile_args.keys():
-                print(
-                    "Warning: user-specified compilation argument fix_clifford is being overridden due to pipeline requirements."
-                )  # TODO: Make this an actual warning, make this general for all args.
+                warnings.warn(
+                    "User-specified compilation argument fix_clifford is being overridden due to pipeline requirements.",
+                    RuntimeWarning,
+                )
             compile_args["fix_clifford"] = False
         else:
             compile_args["fix_clifford"] = True

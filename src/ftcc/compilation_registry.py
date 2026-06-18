@@ -24,6 +24,15 @@ compilation_registry = {
     "NWQECPauliLayer": "ftcc.compilation_layers:NWQECPauliLayer",
 }
 
+# these are all nodes which accept input in a format which can be pickled
+valid_start_nodes = {
+    "QiskitPBCLayer",
+    "PyZXLayer",
+    "NWQECTranspilationLayer",
+    "TQECLayer",
+    "BaseLayer",
+}
+
 
 def load_compilation_layer(label):
     path = compilation_registry[label]

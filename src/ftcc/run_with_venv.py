@@ -42,6 +42,8 @@ def compile_with_venv(config_filename):
     It is assumed that this function is running within a virtual environment with all requiremets
     for the specified compilation path already installed.
     """
+    # debugging:
+    # print(importlib.metadata.distributions())
 
     # ---- load config ----
     with open(config_filename, "r") as f:
@@ -82,6 +84,9 @@ def compile_with_venv(config_filename):
     layer.compile()
     # return the compiled circuit
     compiled_circuit = layer.circuit
+    print("------------ start of compiled circuit ------------")
+    print(compiled_circuit)
+    print("------------ end of compiled circuit ------------")
 
     # write compiled circuit to file
     with open(output_filename, "wb") as f:
