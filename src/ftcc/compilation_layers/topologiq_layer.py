@@ -1,4 +1,5 @@
-from topologiq.scripts.runner import runner
+# from topologiq.core.graph_manager.graph_manager import runner
+from topologiq.core.graph_manager.graph_manager import BlockGraphManager
 from ftcc.compilation_layers.base_layer import BaseLayer
 
 
@@ -48,28 +49,37 @@ class TopologiqLayer(BaseLayer):
         """
         Com
         """
-        circuit_name = (
-            self.metadata["NAME"]
-            if "name" in self.metadata.keys()
-            else "FT_circuit_name_placeholder"
-        )
+        # circuit_name = (
+        #     self.metadata["NAME"]
+        #     if "name" in self.metadata.keys()
+        #     else "FT_circuit_name_placeholder"
+        # )
 
         kwargs = self.compile_args
 
-        simple_graph_after_use, edge_paths, lattice_nodes, lattice_edges = runner(
-            self.circuit,
-            circuit_name,
-            **kwargs,
-        )
+        bgraph_manager = BlockGraphManager(self.circuit, **kwargs)
+        bgraph_manager.build()
+        self.bgraph = bgraph_manager.bgraph
+        self.bgraph_manager = bgraph_manager
 
-        if lattice_nodes is None or lattice_edges is None:
+        # simple_graph_after_use, edge_paths, lattice_nodes, lattice_edges = runner(
+        #     self.circuit,
+        #     circuit_name,
+        #     **kwargs,
+        # )
+
+        # if lattice_nodes is None or lattice_edges is None:
+        if bgraph_manager.bgraph.nodes is None or bgraph_manager.bgraph.edges is None:
             raise RuntimeError(
                 "Topologiq timed out. Try again with more attempts (set the more_attempts compile arg) if you think this circuit should work. However, it may be the case that topologiq simply cannot compile this circuit."
             )
         else:
-            self.metadata["topologiq_edge_paths"] = edge_paths
-            self.metadata["topologiq_lattice_nodes"] = lattice_nodes
-            self.metadata["topologiq_lattice_edges"] = lattice_edges
-            self.simple_graph = simple_graph_after_use
+            # self.metadata["topologiq_edge_paths"] = edge_paths
+            # self.metadata["topologiq_lattice_nodes"] = lattice_nodes
+            # self.metadata["topologiq_lattice_edges"] = lattice_edges
+            # self.simple_graph = simple_graph_after_use
+
+            self.metadata["topologiq_lattice_nodes"] = bgraph_manager.bgraph.nodes
+            self.metadata["topologiq_lattice_edges"] = bgraph_manager.bgraph.edges
 
         return

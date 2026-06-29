@@ -14,8 +14,10 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-topologiq = { git = "https://github.com/tqec/topologiq", rev = "15d3ed4" }
+# topologiq = { git = "https://github.com/tqec/topologiq", rev = "15d3ed4" }
+topologiq = { git = "https://github.com/tqec/topologiq", rev = "3f78cc2" }
 # tqec = { git = "https://github.com/tqec/tqec.git", rev = "e5d927e" }
+tqec = { git = "https://github.com/tqec/tqec.git", rev = "f30746c" }
 ucc = { git = "https://github.com/unitaryfoundation/ucc.git", rev = "596-nwqec-pass" }
 mqt-qecc = { git = "https://github.com/munich-quantum-toolkit/qecc.git" }
 nwqec = { git = "https://github.com/pnnl/nwqec" }
@@ -74,7 +76,11 @@ conflicts = [
     [
         { group = "MQTLayer" },
         { group = "TQECLayer" }
-    ]
+    ],
+    [
+        { group = "TopologiqLayer" },
+        { group = "ucc" }
+    ],
 ]
 
 [tool.pytest.ini_options]

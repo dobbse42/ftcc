@@ -19,7 +19,7 @@ from ftcc import Pipeline
 pytestmark = pytest.mark.build
 
 
-def generate_random_nwqec_circuit(N: int):
+def generate_random_nwqec_circuit(N: int, save=True):
     qiskit_circuit = random_circuit(
         N, N**2, measure=False, conditional=False, reset=False, seed=42
     )
@@ -37,19 +37,25 @@ def generate_random_nwqec_circuit(N: int):
         del qiskit_circuit.data[idx - num_removed]
         num_removed += 1
     # Make nwqec circuit
-    with tempfile.NamedTemporaryFile() as tmp:
-        qasm2.dump(qiskit_circuit, tmp.name)
-        nwqec_circuit = nwqec.load_qasm(tmp.name)
-
-    return nwqec_circuit
+    if save:
+        with tempfile.NamedTemporaryFile() as tmp:
+            qasm2.dump(qiskit_circuit, tmp.name)
+            nwqec_circuit = nwqec.load_qasm(tmp.name)
+            return nwqec_circuit
+    else:
+        return qasm2.dumps(qiskit_circuit)
 
 
 @pytest.mark.parametrize("N", [5, 7, 9])
 def test_nwqec_end_to_end(N: int):
-    nwqec_circuit = generate_random_nwqec_circuit(N)
+    nwqec_circuit = generate_random_nwqec_circuit(N, save=False)
 
     pipeline = Pipeline(nwqec_circuit)
-    compilation_path = [NWQECTranspilationLayer, NWQECPauliLayer, QiskitBicycleLayer]
+    compilation_path = [
+        "NWQECTranspilationLayer",
+        "NWQECPauliLayer",
+        "QiskitBicycleLayer",
+    ]
 
     pipeline.compile(compilation_path)
 

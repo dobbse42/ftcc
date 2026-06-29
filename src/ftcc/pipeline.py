@@ -7,6 +7,7 @@ import os
 import subprocess
 import pickle
 import json
+from subprocess import CalledProcessError
 
 
 class Pipeline:
@@ -135,19 +136,31 @@ class Pipeline:
             )
             return
         # run compilation
-        subprocess.run(
-            [
-                "uv",
-                "run",
-                "--with-requirements",
-                requirements_filename,
-                "python",
-                "-m",
-                "ftcc.run_with_venv",
-                config_filename,
-            ],
-            check=True,
-        )
+        try:
+            subprocess.run(  # needs uv run --quiet if you want to do error passing
+                [
+                    "uv",
+                    "run",
+                    "--with-requirements",
+                    requirements_filename,
+                    "python",
+                    "-m",
+                    "ftcc.run_with_venv",
+                    config_filename,
+                ],
+                check=True,
+                capture_output=False,
+            )
+        except CalledProcessError as err:
+            # print("CalledProcessError. stderr below:")
+            # subprocess_exception = json.loads(err.stderr)
+            # print(err.stderr)
+            # print("exception type: ", subprocess_exception["type"])
+            # print("exception message: ", subprocess_exception["message"])
+            # print(err)
+            raise err
+            # raise RuntimeError("An exception occurred during compilation.")
+            # TODO: log compilation error information
 
         print("compilation run complete")
         with open(output_filename, "rb") as f:

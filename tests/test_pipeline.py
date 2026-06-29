@@ -80,7 +80,7 @@ def test_pipeline_ls():
     zx_circuit = zx.Circuit.from_qasm(qasm_str)
 
     pipeline = Pipeline(zx_circuit)
-    compilation_path = ['PyZXLayer"TopologiqLayer', "TQECLayer"]
+    compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
     output_filename = "test_compile_ls.out"
 
     pipeline.compile(compilation_path, code_params, output_filename=output_filename)

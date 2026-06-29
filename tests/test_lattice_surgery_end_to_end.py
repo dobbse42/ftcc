@@ -70,9 +70,20 @@ tqec_layer.compile(Basis.X)  # basis could also potentially be specified in meta
 
 compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
 pipeline = Pipeline(zx_circuit)
+# try:
+#     print("start of try block")
+#     compiled_circuit = pipeline.compile(
+#         compilation_path=compilation_path, code_params=code_params, manual_compile=False
+#     )
+#     print("end of try block")
+#     print(compiled_circuit)
+# except Exception as err:
+# assert str(err)[17:30] == "RuntimeError"
+# assert str(err)[32:97] == "This error occurred because the circuit passed to TQEC called for"
+# print("Everything worked up to an unimplemented TQEC operation")
+#     raise err
 compiled_circuit = pipeline.compile(
-    compilation_path=compilation_path, code_params=code_params, manual_compile=True
+    compilation_path=compilation_path, code_params=code_params, manual_compile=False
 )
 
-print(compiled_circuit)
 # print(tqec_layer.stim_circuit)
