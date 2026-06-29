@@ -78,6 +78,10 @@ conflicts = [
         { group = "TQECLayer" }
     ],
     [
+        { group = "MQTLayer" },
+        { group = "TopologiqLayer" }
+    ],
+    [
         { group = "TopologiqLayer" },
         { group = "ucc" }
     ],
