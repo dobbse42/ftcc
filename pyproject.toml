@@ -15,12 +15,12 @@ dependencies = [
 
 [tool.uv.sources]
 # topologiq = { git = "https://github.com/tqec/topologiq", rev = "15d3ed4" }
-topologiq = { git = "https://github.com/tqec/topologiq", rev = "3f78cc2" }
+topologiq = { git = "https://github.com/tqec/topologiq", rev = "cdf0f2255e1bd33fbe72911cf238eda36dea9def" }
 # tqec = { git = "https://github.com/tqec/tqec.git", rev = "e5d927e" }
 tqec = { git = "https://github.com/tqec/tqec.git", rev = "f30746c" }
 ucc = { git = "https://github.com/unitaryfoundation/ucc.git", rev = "596-nwqec-pass" }
 mqt-qecc = { git = "https://github.com/munich-quantum-toolkit/qecc.git" }
-nwqec = { git = "https://github.com/pnnl/nwqec" }
+# nwqec = { git = "https://github.com/pnnl/nwqec" }
 
 [dependency-groups]
 dev = [
@@ -49,10 +49,10 @@ QiskitBicycleLayer = [
     "qiskit>=2.3.0",
 ]
 NWQECTranspilationLayer = [
-    "nwqec",
+    "nwqec==0.1.1",
 ]
 NWQECPauliLayer = [
-    "nwqec",
+    "nwqec==0.1.1",
 ]
 MQTLayer = [
     "mqt>=0.1.1",
