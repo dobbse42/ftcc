@@ -23,13 +23,20 @@ git clone https://github.com/dobbse42/ftcc.git
 then simply run `uv sync` and you should be able to use the library.
 Feel free to test that everything's working by running the tests:
 ```
-uv run pytest -s
+uv run --group PyZXLayer --group QiskitBicycleLayer --group QiskitPBCLayer --group NWQECTranspilationLayer --group NWQECPauliLayer pytest -s -m build
 ```
+
+Additionally, there are a set of tests for lattice surgery compilation using TQEC and Topologiq, though these will frequently fail as TQEC is still a work in progress and the TQECLayer and associated tests are not yet set up to only call the implemented operations in TQEC.
+```
+uv run --group PyZXLayer --group TopologiqLayer --group TQECLayer pytest -s -m lattice_surgery
+```
+
+Note the `--group` and `-m` arguments. This is to ensure that only tests which utilize libraries without dependency conflicts are run together.
 
 Tutorials and example notebooks will be added around the same time that we implement packaging, but for now a good place to start understanding the library is by looking at the end-to-end tests.
 
 ### Contributing
-Contributions are welcome! If you are interested in contributing, please see the contributor's guide. Feel free to reach out on the project's discord channel if you have any questions or just want to learn more.
+Contributions are welcome! If you are interested in contributing, please see the contributtion guide. Feel free to reach out on the project's discord channel if you have any questions or just want to learn more.
 If there is particular functionality missing which you would either like implemented or want to implement yourself, opening a feature request issue is a great place to start.
 
 ftcc has been patterned after the Unitary Foundation's [ucc](https://github.com/unitaryfoundation/ucc) tool for circuit optimization, and tries to mimic its user experience where possible.

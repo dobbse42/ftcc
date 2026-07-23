@@ -7,7 +7,7 @@ from pyzx.generate import CNOT_HAD_PHASE_circuit, cliffordT
 
 from ftcc.compilation_layers.pyzx_layer import PyZXLayer
 
-pytestmark = pytest.mark.build
+# pytestmark = pytest.mark.build
 
 
 def random_area_law_circuit(N, seed=42):
@@ -75,6 +75,7 @@ def test_zx_graph_correctness_large(N, circuit_type):
   return"""
 
 
+@pytest.mark.build
 @pytest.mark.parametrize("N", [3, 5, 7])
 @pytest.mark.parametrize("circuit_type", ["cnot_had_phase"])
 def test_zx_optimized_correctness_small(N, circuit_type):
@@ -102,6 +103,7 @@ def test_zx_optimized_correctness_small(N, circuit_type):
     return
 
 
+@pytest.mark.large
 @pytest.mark.parametrize("N", [10, 12, 14])
 @pytest.mark.parametrize("circuit_type", ["cnot_had_phase"])
 def test_zx_optimized_correctness_large(N, circuit_type):

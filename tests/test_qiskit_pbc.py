@@ -35,6 +35,9 @@ def test_qiskit_pbc_t():
 
     qiskit_layer = QiskitPBCLayer(qc, metadata)
 
+    # necessary since we are directly invoking qiskit_layer.compile()
+    qiskit_layer.compile_args = {"fix_clifford": True}
+
     qiskit_layer.compile()
     # qct = LitinskiTransformation(fix_clifford=True)(qc)
     qct = qiskit_layer.circuit
@@ -60,6 +63,10 @@ def test_qiskit_pbc_random(N: int):
 
     metadata = {}
     qiskit_layer = QiskitPBCLayer(qc, metadata)
+
+    # necessary since we are directly invoking qiskit_layer.compile()
+    qiskit_layer.compile_args = {"fix_clifford": True}
+
     qiskit_layer.compile()
 
     qct = qiskit_layer.circuit
@@ -104,7 +111,11 @@ def test_qiskit_pbc_measure():
     # at the end of the transformed circuit, and clearing the global phase).
     metadata = {}
     qiskit_layer = QiskitPBCLayer(qc, metadata)
-    qiskit_layer.compile(fix_clifford=False)
+
+    # necessary since we are directly invoking qiskit_layer.compile()
+    qiskit_layer.compile_args = {"fix_clifford": False}
+
+    qiskit_layer.compile()
     qct = qiskit_layer.circuit
     qct.global_phase = 0
 
@@ -161,7 +172,11 @@ def test_qiskit_bicycle_translation():
         "code_d": 12,
     }
     qiskit_layer = QiskitPBCLayer(qc, metadata)
-    qiskit_layer.compile(fix_clifford=False)
+
+    # necessary since we are directly invoking qiskit_layer.compile()
+    qiskit_layer.compile_args = {"fix_clifford": False}
+
+    qiskit_layer.compile()
     bicycle_layer = translate_qiskit_pbc_to_bicycle(qiskit_layer)
     bicycle_layer.compile()
 

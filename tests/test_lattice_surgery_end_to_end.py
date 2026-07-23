@@ -1,89 +1,127 @@
-# from ftcc.compilation_layers import PyZXLayer, TopologiqLayer, TQECLayer
-# from ftcc.translation_layers.topologiq_to_tqec import translate_topologiq_to_tqec
+from ftcc.compilation_layers import PyZXLayer, TopologiqLayer, TQECLayer
+from ftcc.translation_layers.topologiq_to_tqec import translate_topologiq_to_tqec
+from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
 
-# from ftcc.translation_layers.pyzx_to_topologiq import PyZXToTopologiqTranslator
-# from ftcc.translation_layers.pyzx_to_topologiq import translate_pyzx_to_topologiq
 import pytest
 from ftcc import Pipeline
 
 import qiskit.qasm2 as qasm2
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit as QiskitCircuit
 import pyzx as zx
-# from tqec.utils.enums import Basis
-
-# Define encoding circuit for steane code. This is an example of something that could be convertd to an encoding circuit layer.
+from tqec.utils.enums import Basis
 
 pytestmark = pytest.mark.lattice_surgery
 
-qc = QuantumCircuit(10)
-qc.h(0)
-qc.cx(0, 3)
-qc.cx(0, 4)
-qc.cx(0, 5)
-qc.cx(0, 6)
-qc.h(0)
-qc.h(1)
-qc.cx(1, 3)
-qc.cx(1, 4)
-qc.cx(1, 7)
-qc.cx(1, 8)
-qc.h(1)
-qc.h(2)
-qc.cx(2, 3)
-qc.cx(2, 5)
-qc.cx(2, 7)
-qc.cx(2, 9)
-qc.h(2)
 
-qasm_str = qasm2.dumps(qc)
+def test_full_pipeline_lattice_surgery():
+    qc = QiskitCircuit(10)
+    qc.h(0)
+    qc.cx(0, 3)
+    qc.cx(0, 4)
+    qc.cx(0, 5)
+    qc.cx(0, 6)
+    qc.h(0)
+    qc.h(1)
+    qc.cx(1, 3)
+    qc.cx(1, 4)
+    qc.cx(1, 7)
+    qc.cx(1, 8)
+    qc.h(1)
+    qc.h(2)
+    qc.cx(2, 3)
+    qc.cx(2, 5)
+    qc.cx(2, 7)
+    qc.cx(2, 9)
+    qc.h(2)
 
-# Make ready for PyZX layer (this would become a translation layer)
-zx_circuit = zx.Circuit.from_qasm(qasm_str)
-zx_graph = zx_circuit.to_graph()
+    qasm_str = qasm2.dumps(qc)
+    # Make ready for PyZX layer (this would become a translation layer)
+    zx_circuit = zx.Circuit.from_qasm(qasm_str)
 
-# num_apply_state = zx_graph.num_inputs()
-# zx_graph.apply_state("0" * num_apply_state)
-# zx_graph.apply_effect("000///////")
+    args_dict = {"TopologiqLayer": {"max_attempts": 10}}
 
-# Use framework
-metadata = {
-    "code_n": 7,
-    "code_k": 1,
-    "code_d": 3,
-    "num_qubits": 10,
-    "num_ancilla": 3,
-}
-code_params = {
-    "n": 7,
-    "k": 1,
-    "d": 3,
-}
+    pipeline = Pipeline(zx_circuit)
+    compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
+    pipeline.compile(compilation_path, compile_args=args_dict)
 
-"""pyzx_layer = PyZXLayer(zx_graph, metadata=metadata)
-pyzx_layer.compile()
+    return
 
-topologiq_layer = translate_pyzx_to_topologiq(pyzx_layer)
-topologiq_layer.compile()
 
-tqec_layer = translate_topologiq_to_tqec(topologiq_layer)
-tqec_layer.compile(Basis.X)  # basis could also potentially be specified in metadata"""
+def test_lattice_surgery_manual():
+    # Define encoding circuit for steane code. This is an example of something that could be convertd to an encoding circuit layer.
 
-compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
-pipeline = Pipeline(zx_circuit)
-# try:
-#     print("start of try block")
-#     compiled_circuit = pipeline.compile(
-#         compilation_path=compilation_path, code_params=code_params, manual_compile=False
-#     )
-#     print("end of try block")
-#     print(compiled_circuit)
-# except Exception as err:
-# assert str(err)[17:30] == "RuntimeError"
-# assert str(err)[32:97] == "This error occurred because the circuit passed to TQEC called for"
-# print("Everything worked up to an unimplemented TQEC operation")
-#     raise err
-compiled_circuit = pipeline.compile(
-    compilation_path=compilation_path, code_params=code_params, manual_compile=False
-)
+    qc = QiskitCircuit(10)
+    qc.h(0)
+    qc.cx(0, 3)
+    qc.cx(0, 4)
+    qc.cx(0, 5)
+    qc.cx(0, 6)
+    qc.h(0)
+    qc.h(1)
+    qc.cx(1, 3)
+    qc.cx(1, 4)
+    qc.cx(1, 7)
+    qc.cx(1, 8)
+    qc.h(1)
+    qc.h(2)
+    qc.cx(2, 3)
+    qc.cx(2, 5)
+    qc.cx(2, 7)
+    qc.cx(2, 9)
+    qc.h(2)
 
-# print(tqec_layer.stim_circuit)
+    qasm_str = qasm2.dumps(qc)
+
+    # Make ready for PyZX layer (this would become a translation layer)
+    zx_circuit = zx.Circuit.from_qasm(qasm_str)
+    zx_graph = zx_circuit.to_graph()
+
+    # num_apply_state = zx_graph.num_inputs()
+    # zx_graph.apply_state("0" * num_apply_state)
+    # zx_graph.apply_effect("000///////")
+
+    # Use framework
+    metadata = {
+        "code_n": 7,
+        "code_k": 1,
+        "code_d": 3,
+        "num_qubits": 10,
+        "num_ancilla": 3,
+    }
+
+    pyzx_layer = PyZXLayer(zx_graph, metadata=metadata)
+    pyzx_layer.compile()
+
+    topologiq_layer = translate_pyzx_to_topologiq(pyzx_layer)
+    topologiq_layer.compile_args = {
+        "max_attempts": 10,
+        "seed": 42,  # seed speicifed to avoid the infinite loop that topologqi sometimes falls into
+    }
+    topologiq_layer.compile()
+
+    tqec_layer = translate_topologiq_to_tqec(topologiq_layer)
+    tqec_layer.compile(Basis.X)  # basis could also potentially be specified in metadata
+
+    # compilation_path = ["PyZXLayer", "TopologiqLayer", "TQECLayer"]
+    # pipeline = Pipeline(zx_circuit)
+
+    # try:
+    #     print("start of try block")
+    #     compiled_circuit = pipeline.compile(
+    #         compilation_path=compilation_path, code_params=code_params, manual_compile=False
+    #     )
+    #     print("end of try block")
+    #     print(compiled_circuit)
+    # except Exception as err:
+    # assert str(err)[17:30] == "RuntimeError"
+    # assert str(err)[32:97] == "This error occurred because the circuit passed to TQEC called for"
+    # print("Everything worked up to an unimplemented TQEC operation")
+    #     raise err
+
+    """compiled_circuit = pipeline.compile(
+        compilation_path=compilation_path, code_params=code_params, manual_compile=False
+    )"""
+
+    print(tqec_layer.stim_circuit)
+
+    return

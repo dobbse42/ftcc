@@ -9,18 +9,22 @@ import pyzx as zx
 from ftcc.compilation_layers import (
     QiskitPBCLayer,
     QiskitBicycleLayer,
-    # MQTEncodingLayer,
-    # TopologiqLayer,
-    # TQECLayer,
-    # PyZXLayer,
     BaseLayer,
 )
 from ftcc import Pipeline
 
 
-pytestmark = pytest.mark.build
+# pytestmark = pytest.mark.build
+
+"""
+This is only meant to contain tests for functions within Pipeline.py, not end-to-end compilation runs. This
+is done in order to keep the testing of Pipeline and the testing of individual layers separate. Currently
+we use the QiskitPBC -> QiskitBicycle compilation path as a prototypical compilation path when necessary, but
+changing this for some dummy path which is not dependent on actual compilation layers is a TODO.
+"""
 
 
+@pytest.mark.build
 @pytest.mark.parametrize("N", [3, 4, 5])
 def test_pipeline_compile(N: int):
     # create random test circuit
@@ -48,6 +52,7 @@ def test_pipeline_compile(N: int):
     return
 
 
+@pytest.mark.lattice_surgery
 def test_pipeline_ls():
     qc = QiskitCircuit(10)
     qc.h(0)
@@ -92,7 +97,8 @@ def test_pipeline_ls():
     return
 
 
-def test_pipeline_compile_args():
+@pytest.mark.lattice_surgery
+def test_user_specified_pipeline_compile_args():
     qc = QiskitCircuit(10)
     qc.h(0)
     qc.cx(0, 3)
@@ -143,6 +149,7 @@ def test_pipeline_compile_args():
     return
 
 
+@pytest.mark.build
 @pytest.mark.parametrize("N", [3])
 def test_mandatory_compile_args(N: int):
     # create random test circuit
@@ -171,6 +178,7 @@ def test_mandatory_compile_args(N: int):
     return
 
 
+@pytest.mark.build
 def test_pathfinding():
     qc = QiskitCircuit(10)
     qc.h(0)
@@ -205,12 +213,15 @@ def test_pathfinding():
     pipeline = Pipeline(zx_circuit)
     compilation_path = ["PyZXLayer", "TQECLayer"]
 
-    # This should do pathfinding to find TopologiqLayer connecting PyZXLayer with TQECLayer.
-    pipeline.compile(compilation_path=compilation_path, code_params=code_params)
+    # This should do pathfinding to find TopologiqLayer connecting PyZXLayer with TQECLayer, but not compile.
+    pipeline.compile(
+        compilation_path=compilation_path, code_params=code_params, manual_compile=True
+    )
 
     return
 
 
+@pytest.mark.build
 def test_invalid_path():
     """
     In the event of some sort of invalid compilation path being provided, an informative error message should be given to the user and the tool should exit gracefully.
@@ -229,7 +240,7 @@ def test_invalid_path():
     compilation_path = ["TQECLayer", "QiskitCircuit"]
 
     try:
-        pipeline.compile(compilation_path)
+        pipeline.compile(compilation_path, manual_compile=True)
     except Exception as err:
         assert (
             str(err)
