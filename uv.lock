@@ -810,8 +810,8 @@ mqtlayer = [
     { name = "mqt", specifier = ">=0.1.1" },
     { name = "mqt-qecc", git = "https://github.com/munich-quantum-toolkit/qecc.git" },
 ]
-nwqecpaulilayer = [{ name = "nwqec", specifier = "==0.1.1" }]
-nwqectranspilationlayer = [{ name = "nwqec", specifier = "==0.1.1" }]
+nwqecpaulilayer = [{ name = "nwqec", git = "https://github.com/dobbse42/nwqec.git" }]
+nwqectranspilationlayer = [{ name = "nwqec", git = "https://github.com/dobbse42/nwqec.git" }]
 pyzxlayer = [{ name = "pyzx", specifier = ">=0.9.0" }]
 qiskitbicyclelayer = [{ name = "qiskit", specifier = ">=2.3.0" }]
 qiskitpbclayer = [{ name = "qiskit", specifier = ">=2.3.0" }]
@@ -1503,9 +1503,8 @@ wheels = [
 
 [[package]]
 name = "nwqec"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c0/75/c984f6bfbd5572cc4ef7bc0317e27d3f1d4dd51ee818efdc34bd27a3f48f/nwqec-0.1.1.tar.gz", hash = "sha256:24946909496389bdc3c2fd9cfae94f1470911ccdc330abc2ab5a93eec813a06c", size = 3717519, upload-time = "2025-11-21T02:31:56.923Z" }
+version = "0.1.2"
+source = { git = "https://github.com/dobbse42/nwqec.git#28be07ef124e39dd8876a89f87478f569ae1920f" }
 
 [[package]]
 name = "openqasm3"
