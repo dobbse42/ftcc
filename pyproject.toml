@@ -90,7 +90,8 @@ conflicts = [
 [tool.pytest.ini_options]
 markers = [
     "build: basic build_tests",
-    "lattice_surgery: tests using lattice surgery tools"
+    "lattice_surgery: tests using lattice surgery tools",
+    "large: tests on larger inputs which take longer",
 ]
 
 [tool.hatch.build.hooks.custom]
