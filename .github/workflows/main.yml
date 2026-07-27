@@ -34,7 +34,7 @@ jobs:
         run: uv run --group PyZXLayer --group dev --group QiskitBicycleLayer --group QiskitPBCLayer --group NWQECTranspilationLayer --group NWQECPauliLayer pytest --cov --cov-branch --cov-report=xml --ignore=tests/test_lattice_surgery_end_to_end.py -m build
 
       - name: Run lattice surgery tests with coverage
-        run: uv run --group PyZXLayer --group TopologiqLayer --group TQECLayer pytest --cov --cov-branch --cov-append -m lattice_surgery
+        run: uv run --group PyZXLayer --group TopologiqLayer --group TQECLayer pytest --cov --cov-branch --cov-append -m lattice_surgery --ignore=tests/test_nwqec_end_to_end.py --ignore=tests/test_nwqec_pbc.py --ignore=tests/test_pipeline.py --ignore=tests/test_qiskit_bicycle.py --ignore=tests/test_qiskit_pbc.py
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6
