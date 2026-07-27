@@ -49,10 +49,10 @@ QiskitBicycleLayer = [
     "qiskit>=2.3.0",
 ]
 NWQECTranspilationLayer = [
-    "nwqec==0.1.2",
+    "nwqec==0.1.1",
 ]
 NWQECPauliLayer = [
-    "nwqec==0.1.2",
+    "nwqec==0.1.1",
 ]
 MQTLayer = [
     "mqt>=0.1.1",
