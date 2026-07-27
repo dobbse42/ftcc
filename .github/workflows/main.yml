@@ -24,6 +24,9 @@ jobs:
       - name: Test python version
         run: python --version & uv run python --version
 
+      - name: Test uv version
+        run: uv --version
+
       - name: Install dependencies
         run: uv sync
 
